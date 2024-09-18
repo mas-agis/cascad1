@@ -1,0 +1,9 @@
+name: delly
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - delly=1.2.6
+  - samtools=1.20
+prefix: /home/mnaji/.conda/envs/delly

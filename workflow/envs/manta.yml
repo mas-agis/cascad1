@@ -1,0 +1,11 @@
+name: manta
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - manta=1.6.0
+  - pip=20.1.1
+  - python=2.7.18
+  - samtools=1.20
+prefix: /home/mnaji/.conda/envs/manta

@@ -1,0 +1,24 @@
+def get_fastq(wildcards): 
+    """Get pair fastq files of given sample-unit."""
+    fastqs = samples.loc[wildcards.sample, "reads"].split(",")
+    return fastqs
+def get_fastq1(wildcards):  
+    """Get first-pair of fastq files of given sample-unit."""
+    fastq1 = samples.loc[wildcards.sample, "reads"].split(",")[0]
+    return fastq1
+def get_fastq2(wildcards):  #first-pair fastq
+    """Get second-pair of fastq files of given sample-unit."""
+    fastq2 = samples.loc[wildcards.sample, "reads"].split(",")[1]
+    return fastq2
+def get_panel1(wildcards):
+    """Get panel1 (PBSV) of given sample-unit."""
+    vcf = samples.loc[wildcards.sample, "SV_panel"]
+    return vcf
+def get_R1_list(wildcards):
+    """Get forward fastq files of given sample-unit."""
+    fastqs = samples.loc[wildcards.sample, "R1_list"].split(",")
+    return fastqs
+def get_R2_list(wildcards):
+    """Get reverse fastq files of given sample-unit."""
+    fastqs = samples.loc[wildcards.sample, "R2_list"].split(",")
+    return fastqs

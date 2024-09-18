@@ -1,0 +1,34 @@
+executor: slurm
+jobs: 100
+
+default-resources:
+  slurm_partition: "workq"
+  slurm_account: "mnaji"
+  mem: 12GB
+  time: 8:00:00
+set-threads:
+    bwamap: 24
+    remove_dup: 24
+    indexing_xg: 5
+    giraffe_autoindex: 1
+    giraffe_mapping: 32
+    giraffe_chunk: 1
+    giraffe_pack: 3
+    paragraph_genotypeSV: 7
+set-resources:
+    bwamap:
+      mem: 64GB
+    remove_dup:
+      mem: 64GB
+    indexing_xg:
+      mem: 100GB
+    giraffe_autoindex:
+      mem: 100GB
+    giraffe_mapping:
+      mem: 40GB
+    giraffe_chunk:
+      mem: 30GB
+    giraffe_pack:
+      mem: 15GB
+    paragraph_genotypeSV:
+      mem: 21GB

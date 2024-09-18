@@ -1,0 +1,21 @@
+import sys
+import pandas as pd
+
+# Modules
+include: "rules/functions.smk"
+include: "rules/longreads_filter.smk"
+
+samples_lr = pd.read_table(config["samples_lr"],
+                        dtype={"sample_lr": str}).set_index("sample_lr", drop=False)
+
+
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, "X"]
+CALLER= ["cutesv", "pbsv", "sniffles"]
+#CALLER= ["pbsv"]
+
+# Target rules
+rule all:
+    input:
+        [expand("vcf_lr/{sample_lr}_{caller}.vcf.gz.tbi", sample_lr=samples_lr.index, caller=CALLER)]

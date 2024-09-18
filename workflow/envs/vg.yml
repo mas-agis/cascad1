@@ -1,0 +1,8 @@
+name: vg
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - vg=1.56.0
+prefix: /home/mnaji/.conda/envs/vg
