@@ -3,3 +3,5 @@ results/
 resources/ARS1.2PlusY_BQSR.vcf.gz
 resources/ARS1.2PlusY_BQSR.vcf.gz.tbi
 .snakemake
+workflow/nohup.out
+workflow/nohup_Snakefile_longreads.out
