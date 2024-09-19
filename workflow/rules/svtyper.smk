@@ -5,7 +5,7 @@ rule bam_json:
     input:
         "bam_files/recal_{sample}.bam"
     output:
-        "bam_files/recal_{sample}.bam.json"
+        temp("bam_files/recal_{sample}.bam.json")
     conda:
         "../envs/svtyper.yml"
     log:
@@ -17,7 +17,7 @@ rule modified_panel_vcf:
     input: 
         get_panel1
     output:
-        "svtyper/modif_panel1_{sample}.vcf"
+        temp("svtyper/modif_panel1_{sample}.vcf")
     conda:
         "../envs/svtyper.yml"
     log:
@@ -34,7 +34,7 @@ rule svtyper_sso:
         "bam_files/recal_{sample}.bam",
         "bam_files/recal_{sample}.bam.json"
     output:
-        "svtyper/{sample}_svtper.vcf.gz"
+        temp("svtyper/{sample}_svtper.vcf.gz")
     conda:
         "../envs/svtyper.yml"
     log:
@@ -46,7 +46,7 @@ rule tabix_svtyper_sso:
     input:
         "svtyper/{sample}_svtper.vcf.gz"
     output:
-        "svtyper/{sample}_svtper.vcf.gz.tbi"
+        temp("svtyper/{sample}_svtper.vcf.gz.tbi")
     log:
         stderr="logs/svtyper/tabix_svtyper_sso_{sample}.log"
     params:

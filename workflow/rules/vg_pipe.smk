@@ -94,20 +94,6 @@ rule giraffe_mapping:
         vg giraffe --gbz-name {input[0]} --minimizer-name {input[1]} --dist-name {input[2]} -f {input[3]} -f {input[4]} --progress --threads 32 --sample {wildcards.sample} > {output}
         """ 
 
-#rule giraffe_snarls:
-#    input:
-#        "vg_vg/{sample}_pt{chr}.vg"
-#    output:
-#        temp("vg_vg/{sample}_pt{chr}.snarls")
-#    conda:
-#        "../envs/vg.yml"
-#    log:
-#        stderr="logs/vg/giraffe_snarls_{sample}_{chr}.log"
-#    shell:
-#        r"""
-#        vg snarls {input} > {output} 
-#        """
-
 rule giraffe_chunk:
     input:
         "vg_vg/{sample}_wg.xg",
@@ -153,7 +139,6 @@ rule giraffe_snarls:
 
 rule giraffe_pack:
     input:
-#        "vg_vg/{sample}_pt{chr}.vg",
         "vg_map/{sample}_{chr}_{chr}.vg",
         "vg_map/{sample}_{chr}_{chr}.gam"
     output:
@@ -169,11 +154,9 @@ rule giraffe_pack:
 
 rule giraffe_call: 
     input:
-#        "vg_vg/{sample}_pt{chr}.vg",
         "vg_map/{sample}_{chr}_{chr}.vg",
         "vg_map/{sample}_{chr}.pack",
         "vg_map/{sample}_pt{chr}.snarls"
-#        "vg_vg/{sample}_pt{chr}.snarls" 
     output:
         temp("vg_call/{sample}_{chr}.vcf")
     conda:

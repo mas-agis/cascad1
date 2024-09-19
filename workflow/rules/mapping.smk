@@ -39,7 +39,10 @@ rule gatk_recalibration:
     log:
         stderr="logs/gatk/recalibration_{sample}.log"
     shell:
-        r"gatk BaseRecalibrator -R {input[0]} --known-sites {input[1]} -I {input[2]} -O {output}"
+        r"""
+        gatk BaseRecalibrator -R {input[0]} --known-sites {input[1]} -I {input[2]} -O {output} 
+        rm -r bam_files/reDup_{wildcards.sample}.bam.bai
+        """
 
 rule gatk_apply_recalibration:
     input:
@@ -47,7 +50,7 @@ rule gatk_apply_recalibration:
         "bam_files/reDup_{sample}.bam",
         "bam_files/{sample}.recal.table"
     output:
-        "bam_files/recal_{sample}.bam"
+        temp("bam_files/recal_{sample}.bam")
     conda:
         "../envs/mapping_min.yml"
     log:

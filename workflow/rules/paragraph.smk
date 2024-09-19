@@ -18,8 +18,8 @@ rule paragraph_details:
     shell:
         r"""
         #creating bash variable
-        read_length=`grep "average length" {input[0]} | cut -f3 ` #average read length
-        bam_depth=`cut -d ' ' -f1 {input[1]} ` #average read depth
+        read_length=`grep "average length" {input[1]} | cut -f3 ` #average read length
+        bam_depth=`cut -d ' ' -f1 {input[2]} ` #average read depth
         #execute R script to create details_sample.txt
         {params.r_script} {wildcards.sample} {input[0]} $bam_depth $read_length
         """

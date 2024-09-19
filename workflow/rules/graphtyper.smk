@@ -8,7 +8,7 @@ rule graphtyper_genotype_sv:
         "bam_files/recal_{sample}.bam",
         config['ref']['autX']
     output:
-        "graphtyper/{sample}_okay.txt"
+        temp("graphtyper/{sample}_okay.txt")
     conda:
         "../envs/graphtyper.yml"
     log:
@@ -23,21 +23,24 @@ rule graphtyper_list_files:
     input:
         "graphtyper/{sample}_okay.txt"
     output:
-        "graphtyper/{sample}_list_vcf.txt"
+        temp("graphtyper/{sample}_list_vcf.txt")
     conda:
         "../envs/graphtyper.yml"
     log:
         stderr="logs/graphtyper/list_files_{sample}.log"
     shell:
         r"""
+        #list each chunk SV genotype vcf in aut+X in the folder
         echo {{1..29}} X | tr ' ' '\n' | while read chrom; do if [[ ! -d graphtyper/temp_{wildcards.sample}/${{chrom}} ]]; then continue; fi; find graphtyper/temp_{wildcards.sample}/${{chrom}} -name "*.vcf.gz" | sort; done > {output} 
+        #remove the temp folder
+        rm -r graphtyper/temp_{wildcards.sample}
         """
 
 rule graphtyper_concat:
     input:
         "graphtyper/{sample}_list_vcf.txt"
     output:
-        "graphtyper/concat_{sample}.vcf.gz"
+        temp("graphtyper/concat_{sample}.vcf.gz")
     conda:
         "../envs/graphtyper.yml"
     params:
@@ -67,14 +70,3 @@ rule graphtyper_filter:
         tabix -p vcf {output}
         """
 
-#OBrule graphtyper_tabix:
-#    input:
-#        "graphtyper/graphtyper_{sample}.vcf.gz"
-#    output:
-#        "graphtyper/graphtyper_{sample}.vcf.gz.tbi"
-#    log:
-#        stderr="logs/graphtyper/tabix_{sample}.log"
-#    params:
-#        "-p vcf"
-#    wrapper:
-#        "v4.3.0/bio/tabix/index"    

@@ -52,7 +52,10 @@ rule smoove_filter:
         stderr="logs/lumpy/smoove_filter_{sample}.log"
     shell:
         r"""
+        #filter the output
         bcftools filter -R {input[0]} {input[1]} | bcftools filter -i 'SVTYPE="DEL"' | bgzip -c > {output};
         tabix -p vcf {output};
+        #remove calculation folder
+        rm -r lumpy/{wildcards.sample}
         """
 
