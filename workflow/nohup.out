@@ -3501,3 +3501,1435 @@ Error in rule giraffe_call:
         (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
     external_jobid: 11100318
 
+[Wed Sep 18 17:25:19 2024]
+Finished job 14.
+128 of 183 steps (70%) done
+Removing temporary output bam_files/ABOFRAM007402068886.bam.
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 17:25:19 2024]
+rule gatk_recalibration:
+    input: /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa, /work/project/CASCAD/mnaji/sm_folder/resources/ARS1.2PlusY_BQSR.vcf.gz, bam_files/reDup_ABOFRAM007402068886.bam
+    output: bam_files/ABOFRAM007402068886.recal.table
+    log: logs/gatk/recalibration_ABOFRAM007402068886.log
+    jobid: 16
+    reason: Missing output files: bam_files/ABOFRAM007402068886.recal.table; Input files updated by another job: bam_files/reDup_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=51112, disk_mib=48745, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+gatk BaseRecalibrator -R /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa --known-sites /work/project/CASCAD/mnaji/sm_folder/resources/ARS1.2PlusY_BQSR.vcf.gz -I bam_files/reDup_ABOFRAM007402068886.bam -O bam_files/ABOFRAM007402068886.recal.table
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 16 has been submitted with SLURM jobid 11102945 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_gatk_recalibration/ABOFRAM007402068886/11102945.log).
+[Wed Sep 18 19:14:56 2024]
+Finished job 16.
+129 of 183 steps (70%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 19:14:56 2024]
+rule gatk_apply_recalibration:
+    input: /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa, bam_files/reDup_ABOFRAM007402068886.bam, bam_files/ABOFRAM007402068886.recal.table
+    output: bam_files/recal_ABOFRAM007402068886.bam
+    log: logs/gatk/apply_recalibration_ABOFRAM007402068886.log
+    jobid: 13
+    reason: Missing output files: bam_files/recal_ABOFRAM007402068886.bam; Input files updated by another job: bam_files/reDup_ABOFRAM007402068886.bam, bam_files/ABOFRAM007402068886.recal.table
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=49205, disk_mib=46926, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+gatk ApplyBQSR -R /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa -I bam_files/reDup_ABOFRAM007402068886.bam -O bam_files/recal_ABOFRAM007402068886.bam -bqsr bam_files/ABOFRAM007402068886.recal.table
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 13 has been submitted with SLURM jobid 11107436 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_gatk_apply_recalibration/ABOFRAM007402068886/11107436.log).
+[Wed Sep 18 21:10:33 2024]
+Finished job 13.
+130 of 183 steps (71%) done
+Removing temporary output bam_files/reDup_ABOFRAM007402068886.bam.
+Removing temporary output bam_files/ABOFRAM007402068886.recal.table.
+Select jobs to execute...
+Execute 7 jobs...
+
+[Wed Sep 18 21:10:33 2024]
+rule manta_precomp:
+    input: bam_files/recal_ABOFRAM007402068886.bam, /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa
+    output: manta/ABOFRAM007402068886/runWorkflow.py
+    log: logs/manta/manta_precomp_ABOFRAM007402068886.log
+    jobid: 716
+    reason: Missing output files: manta/ABOFRAM007402068886/runWorkflow.py; Input files updated by another job: bam_files/recal_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=85905, disk_mib=81926, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        mkdir -p manta/ABOFRAM007402068886
+        configManta.py --normalBam bam_files/recal_ABOFRAM007402068886.bam --referenceFasta /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa --runDir manta/ABOFRAM007402068886
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 716 has been submitted with SLURM jobid 11108044 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_manta_precomp/ABOFRAM007402068886/11108044.log).
+
+[Wed Sep 18 21:10:34 2024]
+rule bam_json:
+    input: bam_files/recal_ABOFRAM007402068886.bam
+    output: bam_files/recal_ABOFRAM007402068886.bam.json
+    log: logs/svtyper/bam_json_ABOFRAM007402068886.log
+    jobid: 668
+    reason: Missing output files: bam_files/recal_ABOFRAM007402068886.bam.json; Input files updated by another job: bam_files/recal_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=80575, disk_mib=76843, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+svtyper -B bam_files/recal_ABOFRAM007402068886.bam -l bam_files/recal_ABOFRAM007402068886.bam.json
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 668 has been submitted with SLURM jobid 11108045 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_bam_json/ABOFRAM007402068886/11108045.log).
+
+[Wed Sep 18 21:10:34 2024]
+rule bam_depth:
+    input: bam_files/recal_ABOFRAM007402068886.bam
+    output: ../workflow/report/depth/ABOFRAM007402068886.txt
+    log: logs/bwmap/depth_ABOFRAM007402068886.log
+    jobid: 24
+    reason: Missing output files: ../workflow/report/depth/ABOFRAM007402068886.txt; Input files updated by another job: bam_files/recal_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=80575, disk_mib=76843, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+samtools depth bam_files/recal_ABOFRAM007402068886.bam | awk '{sum+=$3} END{print sum/NR}' > ../workflow/report/depth/ABOFRAM007402068886.txt
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 24 has been submitted with SLURM jobid 11108046 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_bam_depth/ABOFRAM007402068886/11108046.log).
+
+[Wed Sep 18 21:10:34 2024]
+rule delly_calling:
+    input: /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa, bam_files/recal_ABOFRAM007402068886.bam
+    output: delly/ABOFRAM007402068886.vcf
+    log: logs/delly/delly_calling_ABOFRAM007402068886.log
+    jobid: 704
+    reason: Missing output files: delly/ABOFRAM007402068886.vcf; Input files updated by another job: bam_files/recal_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=85905, disk_mib=81926, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        delly call -g /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa bam_files/recal_ABOFRAM007402068886.bam --svtype DEL > delly/ABOFRAM007402068886.vcf
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 704 has been submitted with SLURM jobid 11108047 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_delly_calling/ABOFRAM007402068886/11108047.log).
+
+[Wed Sep 18 21:10:34 2024]
+rule graphtyper_genotype_sv:
+    input: /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa, /work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/ABOFRAM007402068886_pbsv.vcf.gz, bam_files/recal_ABOFRAM007402068886.bam, /work/project/CASCAD/mnaji/sm_folder/resources/autX.txt
+    output: graphtyper/ABOFRAM007402068886_okay.txt
+    log: logs/graphtyper/genotype_sv_ABOFRAM007402068886.log
+    jobid: 684
+    reason: Missing output files: graphtyper/ABOFRAM007402068886_okay.txt; Input files updated by another job: bam_files/recal_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=85913, disk_mib=81934, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        mkdir -p graphtyper/temp_ABOFRAM007402068886 
+        graphtyper genotype_sv /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa /work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/ABOFRAM007402068886_pbsv.vcf.gz --sam bam_files/recal_ABOFRAM007402068886.bam --output graphtyper/temp_ABOFRAM007402068886/ --threads 1 --verbose --region_file /work/project/CASCAD/mnaji/sm_folder/resources/autX.txt --verbose && touch graphtyper/ABOFRAM007402068886_okay.txt
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 684 has been submitted with SLURM jobid 11108048 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_graphtyper_genotype_sv/ABOFRAM007402068886/11108048.log).
+
+[Wed Sep 18 21:10:34 2024]
+rule smoove_lumpy:
+    input: /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa, bam_files/recal_ABOFRAM007402068886.bam
+    output: lumpy/ABOFRAM007402068886/ABOFRAM007402068886-smoove.vcf.gz
+    log: logs/smoove/smoove_lumpy_ABOFRAM007402068886.log
+    jobid: 728
+    reason: Missing output files: lumpy/ABOFRAM007402068886/ABOFRAM007402068886-smoove.vcf.gz; Input files updated by another job: bam_files/recal_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=85905, disk_mib=81926, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        mkdir -p lumpy/ABOFRAM007402068886
+        smoove call --name ABOFRAM007402068886 --fasta /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa -p 1 --outdir lumpy/ABOFRAM007402068886 bam_files/recal_ABOFRAM007402068886.bam 
+        ls -sh lumpy/ABOFRAM007402068886/ABOFRAM007402068886-smoove.vcf.gz
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 728 has been submitted with SLURM jobid 11108049 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_smoove_lumpy/ABOFRAM007402068886/11108049.log).
+
+[Wed Sep 18 21:10:35 2024]
+rule bam_stats:
+    input: bam_files/recal_ABOFRAM007402068886.bam
+    output: ../workflow/report/bam_stats/ABOFRAM007402068886.txt
+    log: logs/bwmap/bam_stats_ABOFRAM007402068886.log
+    jobid: 20
+    reason: Missing output files: ../workflow/report/bam_stats/ABOFRAM007402068886.txt; Input files updated by another job: bam_files/recal_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=80575, disk_mib=76843, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+samtools stats bam_files/recal_ABOFRAM007402068886.bam > ../workflow/report/bam_stats/ABOFRAM007402068886.txt
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 20 has been submitted with SLURM jobid 11108050 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_bam_stats/ABOFRAM007402068886/11108050.log).
+[Wed Sep 18 21:11:34 2024]
+Finished job 716.
+131 of 183 steps (72%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 21:11:34 2024]
+rule manta_comp:
+    input: manta/ABOFRAM007402068886/runWorkflow.py
+    output: manta/ABOFRAM007402068886/results/variants/diploidSV.vcf.gz
+    log: logs/manta/manta_comp_ABOFRAM007402068886.log
+    jobid: 715
+    reason: Missing output files: manta/ABOFRAM007402068886/results/variants/diploidSV.vcf.gz; Input files updated by another job: manta/ABOFRAM007402068886/runWorkflow.py
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        python2.7 manta/ABOFRAM007402068886/runWorkflow.py && ls -sh manta/ABOFRAM007402068886/results/variants/diploidSV.vcf.gz
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 715 has been submitted with SLURM jobid 11108052 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_manta_comp/ABOFRAM007402068886/11108052.log).
+[Wed Sep 18 21:12:34 2024]
+Finished job 668.
+132 of 183 steps (72%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 21:12:34 2024]
+rule svtyper_sso:
+    input: svtyper/modif_panel1_ABOFRAM007402068886.vcf, bam_files/recal_ABOFRAM007402068886.bam, bam_files/recal_ABOFRAM007402068886.bam.json
+    output: svtyper/ABOFRAM007402068886_svtper.vcf.gz
+    log: logs/svtyper/svtyper_sso_ABOFRAM007402068886.log
+    jobid: 666
+    reason: Missing output files: svtyper/ABOFRAM007402068886_svtper.vcf.gz; Input files updated by another job: svtyper/modif_panel1_ABOFRAM007402068886.vcf, bam_files/recal_ABOFRAM007402068886.bam.json, bam_files/recal_ABOFRAM007402068886.bam
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=80609, disk_mib=76875, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+svtyper-sso --batch_size 1000 --max_reads 1000000 -i svtyper/modif_panel1_ABOFRAM007402068886.vcf -B bam_files/recal_ABOFRAM007402068886.bam -l bam_files/recal_ABOFRAM007402068886.bam.json --max_ci_dist 4 --split_weight 1 --disc_weight 1 | bgzip -c > svtyper/ABOFRAM007402068886_svtper.vcf.gz
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 666 has been submitted with SLURM jobid 11108057 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_svtyper_sso/ABOFRAM007402068886/11108057.log).
+[Wed Sep 18 21:16:05 2024]
+Finished job 666.
+133 of 183 steps (73%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 21:16:05 2024]
+rule svtyper_filter:
+    input: svtyper/ABOFRAM007402068886_svtper.vcf.gz
+    output: svtyper/noMis_ABOFRAM007402068886_svtper.vcf.gz
+    log: logs/svtyper/svtyper_filter_ABOFRAM007402068886.log
+    jobid: 665
+    reason: Missing output files: svtyper/noMis_ABOFRAM007402068886_svtper.vcf.gz; Input files updated by another job: svtyper/ABOFRAM007402068886_svtper.vcf.gz
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+bcftools view -e 'GT="mis"' svtyper/ABOFRAM007402068886_svtper.vcf.gz | bgzip -c > svtyper/noMis_ABOFRAM007402068886_svtper.vcf.gz && tabix -p vcf svtyper/noMis_ABOFRAM007402068886_svtper.vcf.gz 
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 665 has been submitted with SLURM jobid 11108064 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_svtyper_filter/ABOFRAM007402068886/11108064.log).
+[Wed Sep 18 21:17:05 2024]
+Finished job 665.
+134 of 183 steps (73%) done
+[Wed Sep 18 21:23:06 2024]
+Finished job 728.
+135 of 183 steps (74%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 21:23:06 2024]
+rule smoove_sort:
+    input: lumpy/ABOFRAM007402068886/ABOFRAM007402068886-smoove.vcf.gz
+    output: lumpy/ABOFRAM007402068886/sorted_lumpy_ABOFRAM007402068886.vcf.gz
+    log: logs/lumpy/smoove_filter_ABOFRAM007402068886.log
+    jobid: 727
+    reason: Missing output files: lumpy/ABOFRAM007402068886/sorted_lumpy_ABOFRAM007402068886.vcf.gz; Input files updated by another job: lumpy/ABOFRAM007402068886/ABOFRAM007402068886-smoove.vcf.gz
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        bcftools sort lumpy/ABOFRAM007402068886/ABOFRAM007402068886-smoove.vcf.gz -O z -o lumpy/ABOFRAM007402068886/sorted_lumpy_ABOFRAM007402068886.vcf.gz
+        tabix -p vcf lumpy/ABOFRAM007402068886/sorted_lumpy_ABOFRAM007402068886.vcf.gz;
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 727 has been submitted with SLURM jobid 11108162 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_smoove_sort/ABOFRAM007402068886/11108162.log).
+[Wed Sep 18 21:24:06 2024]
+Finished job 727.
+136 of 183 steps (74%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 21:24:06 2024]
+rule smoove_filter:
+    input: /work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed, lumpy/ABOFRAM007402068886/sorted_lumpy_ABOFRAM007402068886.vcf.gz
+    output: lumpy/lumpy_ABOFRAM007402068886.vcf.gz
+    log: logs/lumpy/smoove_filter_ABOFRAM007402068886.log
+    jobid: 726
+    reason: Missing output files: lumpy/lumpy_ABOFRAM007402068886.vcf.gz; Input files updated by another job: lumpy/ABOFRAM007402068886/sorted_lumpy_ABOFRAM007402068886.vcf.gz
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        bcftools filter -R /work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed lumpy/ABOFRAM007402068886/sorted_lumpy_ABOFRAM007402068886.vcf.gz | bcftools filter -i 'SVTYPE="DEL"' | bgzip -c > lumpy/lumpy_ABOFRAM007402068886.vcf.gz;
+        tabix -p vcf lumpy/lumpy_ABOFRAM007402068886.vcf.gz;
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 726 has been submitted with SLURM jobid 11108165 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_smoove_filter/ABOFRAM007402068886/11108165.log).
+[Wed Sep 18 21:25:06 2024]
+Finished job 726.
+137 of 183 steps (75%) done
+[Wed Sep 18 21:31:07 2024]
+Finished job 24.
+138 of 183 steps (75%) done
+[Wed Sep 18 21:35:48 2024]
+Finished job 20.
+139 of 183 steps (76%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 21:35:48 2024]
+rule paragraph_details:
+    input: ../workflow/report/bam_stats/ABOFRAM007402068886.txt, ../workflow/report/depth/ABOFRAM007402068886.txt
+    output: paragraph/details_ABOFRAM007402068886.txt
+    log: logs/paragraph/para_details_ABOFRAM007402068886.log
+    jobid: 696
+    reason: Missing output files: paragraph/details_ABOFRAM007402068886.txt; Input files updated by another job: ../workflow/report/depth/ABOFRAM007402068886.txt, ../workflow/report/bam_stats/ABOFRAM007402068886.txt
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        #creating bash variable
+        read_length=`grep "average length" ../workflow/report/bam_stats/ABOFRAM007402068886.txt | cut -f3 ` #average read length
+        bam_depth=`cut -d ' ' -f1 ../workflow/report/depth/ABOFRAM007402068886.txt ' ` #average read depth
+        #execute R script to create details_sample.txt
+        ../workflow/scripts/paragraph_details.r ABOFRAM007402068886 ../workflow/report/bam_stats/ABOFRAM007402068886.txt $bam_depth $read_length
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 696 has been submitted with SLURM jobid 11108188 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_paragraph_details/ABOFRAM007402068886/11108188.log).
+[Wed Sep 18 21:35:58 2024]
+Finished job 704.
+140 of 183 steps (77%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 21:35:58 2024]
+rule delly_filter:
+    input: delly/ABOFRAM007402068886.vcf
+    output: delly/pass_ABOFRAM007402068886.vcf.gz
+    log: logs/delly/delly_filter_ABOFRAM007402068886.log
+    jobid: 703
+    reason: Missing output files: delly/pass_ABOFRAM007402068886.vcf.gz; Input files updated by another job: delly/ABOFRAM007402068886.vcf
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        bcftools filter -i 'FILTER=="PASS" && SVTYPE="DEL"' delly/ABOFRAM007402068886.vcf -O z -o delly/pass_ABOFRAM007402068886.vcf.gz ;
+        tabix -p vcf delly/pass_ABOFRAM007402068886.vcf.gz
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 703 has been submitted with SLURM jobid 11108189 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_delly_filter/ABOFRAM007402068886/11108189.log).
+[Wed Sep 18 21:36:28 2024]
+Error in rule paragraph_details:
+    message: SLURM-job '11108188' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 696
+    input: ../workflow/report/bam_stats/ABOFRAM007402068886.txt, ../workflow/report/depth/ABOFRAM007402068886.txt
+    output: paragraph/details_ABOFRAM007402068886.txt
+    log: logs/paragraph/para_details_ABOFRAM007402068886.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_paragraph_details/ABOFRAM007402068886/11108188.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/582ab6abb2ad1eb8c7f583e43f65ac4b_
+    shell:
+        
+        #creating bash variable
+        read_length=`grep "average length" ../workflow/report/bam_stats/ABOFRAM007402068886.txt | cut -f3 ` #average read length
+        bam_depth=`cut -d ' ' -f1 ../workflow/report/depth/ABOFRAM007402068886.txt ' ` #average read depth
+        #execute R script to create details_sample.txt
+        ../workflow/scripts/paragraph_details.r ABOFRAM007402068886 ../workflow/report/bam_stats/ABOFRAM007402068886.txt $bam_depth $read_length
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11108188
+
+[Wed Sep 18 21:36:58 2024]
+Finished job 703.
+141 of 183 steps (77%) done
+Removing temporary output delly/ABOFRAM007402068886.vcf.
+[Wed Sep 18 23:23:35 2024]
+Finished job 715.
+142 of 183 steps (78%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 23:23:35 2024]
+rule manta_filter:
+    input: /work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed, manta/ABOFRAM007402068886/results/variants/diploidSV.vcf.gz
+    output: manta/ABOFRAM007402068886.vcf.gz
+    log: logs/manta/manta_filter_ABOFRAM007402068886.log
+    jobid: 714
+    reason: Missing output files: manta/ABOFRAM007402068886.vcf.gz; Input files updated by another job: manta/ABOFRAM007402068886/results/variants/diploidSV.vcf.gz
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        bcftools filter -R /work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed manta/ABOFRAM007402068886/results/variants/diploidSV.vcf.gz | bgzip -c > manta/ABOFRAM007402068886.vcf.gz;
+        tabix -p vcf manta/ABOFRAM007402068886.vcf.gz;
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 714 has been submitted with SLURM jobid 11124206 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_manta_filter/ABOFRAM007402068886/11124206.log).
+[Wed Sep 18 23:26:06 2024]
+Finished job 714.
+143 of 183 steps (78%) done
+[Wed Sep 18 23:43:38 2024]
+Finished job 684.
+144 of 183 steps (79%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 23:43:38 2024]
+rule graphtyper_list_files:
+    input: graphtyper/ABOFRAM007402068886_okay.txt
+    output: graphtyper/ABOFRAM007402068886_list_vcf.txt
+    log: logs/graphtyper/list_files_ABOFRAM007402068886.log
+    jobid: 683
+    reason: Missing output files: graphtyper/ABOFRAM007402068886_list_vcf.txt; Input files updated by another job: graphtyper/ABOFRAM007402068886_okay.txt
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        echo {1..29} X | tr ' ' '\n' | while read chrom; do if [[ ! -d graphtyper/temp_ABOFRAM007402068886/${chrom} ]]; then continue; fi; find graphtyper/temp_ABOFRAM007402068886/${chrom} -name "*.vcf.gz" | sort; done > graphtyper/ABOFRAM007402068886_list_vcf.txt 
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 683 has been submitted with SLURM jobid 11124675 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_graphtyper_list_files/ABOFRAM007402068886/11124675.log).
+[Wed Sep 18 23:45:18 2024]
+Finished job 683.
+145 of 183 steps (79%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 23:45:18 2024]
+rule graphtyper_concat:
+    input: graphtyper/ABOFRAM007402068886_list_vcf.txt
+    output: graphtyper/concat_ABOFRAM007402068886.vcf.gz
+    log: logs/graphtyper/concat_ABOFRAM007402068886.log
+    jobid: 682
+    reason: Missing output files: graphtyper/concat_ABOFRAM007402068886.vcf.gz; Input files updated by another job: graphtyper/ABOFRAM007402068886_list_vcf.txt
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        bcftools concat --naive --file-list graphtyper/ABOFRAM007402068886_list_vcf.txt | bcftools sort | bcftools filter -i 'SVLEN>50 & MaxAASR >= 0.5' | bcftools view -m2 -M2 | bgzip -c > graphtyper/concat_ABOFRAM007402068886.vcf.gz  #remove PASS filter
+        tabix -p vcf graphtyper/concat_ABOFRAM007402068886.vcf.gz 
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 682 has been submitted with SLURM jobid 11124679 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_graphtyper_concat/ABOFRAM007402068886/11124679.log).
+[Wed Sep 18 23:46:18 2024]
+Finished job 682.
+146 of 183 steps (80%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Sep 18 23:46:18 2024]
+rule graphtyper_filter:
+    input: graphtyper/concat_ABOFRAM007402068886.vcf.gz
+    output: graphtyper/graphtyper_ABOFRAM007402068886.vcf.gz
+    log: logs/graphtyper/concat_ABOFRAM007402068886.log
+    jobid: 681
+    reason: Missing output files: graphtyper/graphtyper_ABOFRAM007402068886.vcf.gz; Input files updated by another job: graphtyper/concat_ABOFRAM007402068886.vcf.gz
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        bcftools filter -i 'SVMODEL=="AGGREGATED"' graphtyper/concat_ABOFRAM007402068886.vcf.gz | bgzip -c > graphtyper/graphtyper_ABOFRAM007402068886.vcf.gz 
+        tabix -p vcf graphtyper/graphtyper_ABOFRAM007402068886.vcf.gz
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 681 has been submitted with SLURM jobid 11124683 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_graphtyper_filter/ABOFRAM007402068886/11124683.log).
+[Wed Sep 18 23:47:18 2024]
+Finished job 681.
+147 of 183 steps (80%) done
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-09-18T133648.268150.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
+Using profile genotoul for setting default command line arguments.
+Building DAG of jobs...
+Your conda installation is not configured to use strict channel priorities. This is however crucial for having robust and correct environments (for details, see https://conda-forge.org/docs/user/tipsandtricks.html). Please consider to configure strict priorities by executing 'conda config --set channel_priority strict'.
+SLURM run ID: 459f4c81-0e77-439a-872b-236b6191f66b
+Using shell: /usr/bin/bash
+Provided remote nodes: 100
+Job stats:
+job                     count
+--------------------  -------
+all                         1
+filter_paragraph            1
+giraffe_call               30
+giraffe_chunk              30
+giraffe_concat              1
+giraffe_pack               30
+giraffe_snarls             30
+giraffe_tabix               1
+paragraph_details           1
+paragraph_genotypeSV        1
+total                     126
+
+Select jobs to execute...
+Execute 31 jobs...
+
+[Thu Sep 19 08:07:17 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_15_15.gam, vg_map/ABOFRAM007402068886_15_15.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_15.log
+    jobid: 590
+    reason: Missing output files: vg_map/ABOFRAM007402068886_15_15.vg, vg_map/ABOFRAM007402068886_15_15.gam
+    wildcards: sample=ABOFRAM007402068886, chr=15
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 15 -O vg --prefix vg_map/ABOFRAM007402068886_15 && ls -sh vg_map/ABOFRAM007402068886_15_15.gam vg_map/ABOFRAM007402068886_15_15.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 590 has been submitted with SLURM jobid 11129065 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_15/11129065.log).
+
+[Thu Sep 19 08:07:18 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_27_27.gam, vg_map/ABOFRAM007402068886_27_27.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_27.log
+    jobid: 638
+    reason: Missing output files: vg_map/ABOFRAM007402068886_27_27.vg, vg_map/ABOFRAM007402068886_27_27.gam
+    wildcards: sample=ABOFRAM007402068886, chr=27
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 27 -O vg --prefix vg_map/ABOFRAM007402068886_27 && ls -sh vg_map/ABOFRAM007402068886_27_27.gam vg_map/ABOFRAM007402068886_27_27.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 638 has been submitted with SLURM jobid 11129066 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_27/11129066.log).
+
+[Thu Sep 19 08:07:18 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_12_12.gam, vg_map/ABOFRAM007402068886_12_12.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_12.log
+    jobid: 578
+    reason: Missing output files: vg_map/ABOFRAM007402068886_12_12.gam, vg_map/ABOFRAM007402068886_12_12.vg
+    wildcards: sample=ABOFRAM007402068886, chr=12
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 12 -O vg --prefix vg_map/ABOFRAM007402068886_12 && ls -sh vg_map/ABOFRAM007402068886_12_12.gam vg_map/ABOFRAM007402068886_12_12.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 578 has been submitted with SLURM jobid 11129067 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_12/11129067.log).
+
+[Thu Sep 19 08:07:18 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_22_22.gam, vg_map/ABOFRAM007402068886_22_22.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_22.log
+    jobid: 618
+    reason: Missing output files: vg_map/ABOFRAM007402068886_22_22.gam, vg_map/ABOFRAM007402068886_22_22.vg
+    wildcards: sample=ABOFRAM007402068886, chr=22
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 22 -O vg --prefix vg_map/ABOFRAM007402068886_22 && ls -sh vg_map/ABOFRAM007402068886_22_22.gam vg_map/ABOFRAM007402068886_22_22.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 618 has been submitted with SLURM jobid 11129068 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_22/11129068.log).
+
+[Thu Sep 19 08:07:18 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_8_8.gam, vg_map/ABOFRAM007402068886_8_8.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_8.log
+    jobid: 562
+    reason: Missing output files: vg_map/ABOFRAM007402068886_8_8.vg, vg_map/ABOFRAM007402068886_8_8.gam
+    wildcards: sample=ABOFRAM007402068886, chr=8
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 8 -O vg --prefix vg_map/ABOFRAM007402068886_8 && ls -sh vg_map/ABOFRAM007402068886_8_8.gam vg_map/ABOFRAM007402068886_8_8.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 562 has been submitted with SLURM jobid 11129069 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_8/11129069.log).
+
+[Thu Sep 19 08:07:19 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_17_17.gam, vg_map/ABOFRAM007402068886_17_17.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_17.log
+    jobid: 598
+    reason: Missing output files: vg_map/ABOFRAM007402068886_17_17.vg, vg_map/ABOFRAM007402068886_17_17.gam
+    wildcards: sample=ABOFRAM007402068886, chr=17
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 17 -O vg --prefix vg_map/ABOFRAM007402068886_17 && ls -sh vg_map/ABOFRAM007402068886_17_17.gam vg_map/ABOFRAM007402068886_17_17.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 598 has been submitted with SLURM jobid 11129070 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_17/11129070.log).
+
+[Thu Sep 19 08:07:19 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_14_14.gam, vg_map/ABOFRAM007402068886_14_14.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_14.log
+    jobid: 586
+    reason: Missing output files: vg_map/ABOFRAM007402068886_14_14.vg, vg_map/ABOFRAM007402068886_14_14.gam
+    wildcards: sample=ABOFRAM007402068886, chr=14
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 14 -O vg --prefix vg_map/ABOFRAM007402068886_14 && ls -sh vg_map/ABOFRAM007402068886_14_14.gam vg_map/ABOFRAM007402068886_14_14.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 586 has been submitted with SLURM jobid 11129071 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_14/11129071.log).
+
+[Thu Sep 19 08:07:19 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_4_4.gam, vg_map/ABOFRAM007402068886_4_4.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_4.log
+    jobid: 546
+    reason: Missing output files: vg_map/ABOFRAM007402068886_4_4.vg, vg_map/ABOFRAM007402068886_4_4.gam
+    wildcards: sample=ABOFRAM007402068886, chr=4
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 4 -O vg --prefix vg_map/ABOFRAM007402068886_4 && ls -sh vg_map/ABOFRAM007402068886_4_4.gam vg_map/ABOFRAM007402068886_4_4.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 546 has been submitted with SLURM jobid 11129072 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_4/11129072.log).
+
+[Thu Sep 19 08:07:19 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_24_24.gam, vg_map/ABOFRAM007402068886_24_24.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_24.log
+    jobid: 626
+    reason: Missing output files: vg_map/ABOFRAM007402068886_24_24.vg, vg_map/ABOFRAM007402068886_24_24.gam
+    wildcards: sample=ABOFRAM007402068886, chr=24
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 24 -O vg --prefix vg_map/ABOFRAM007402068886_24 && ls -sh vg_map/ABOFRAM007402068886_24_24.gam vg_map/ABOFRAM007402068886_24_24.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 626 has been submitted with SLURM jobid 11129073 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_24/11129073.log).
+
+[Thu Sep 19 08:07:19 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_21_21.gam, vg_map/ABOFRAM007402068886_21_21.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_21.log
+    jobid: 614
+    reason: Missing output files: vg_map/ABOFRAM007402068886_21_21.vg, vg_map/ABOFRAM007402068886_21_21.gam
+    wildcards: sample=ABOFRAM007402068886, chr=21
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 21 -O vg --prefix vg_map/ABOFRAM007402068886_21 && ls -sh vg_map/ABOFRAM007402068886_21_21.gam vg_map/ABOFRAM007402068886_21_21.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 614 has been submitted with SLURM jobid 11129074 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_21/11129074.log).
+
+[Thu Sep 19 08:07:20 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_29_29.gam, vg_map/ABOFRAM007402068886_29_29.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_29.log
+    jobid: 646
+    reason: Missing output files: vg_map/ABOFRAM007402068886_29_29.vg, vg_map/ABOFRAM007402068886_29_29.gam
+    wildcards: sample=ABOFRAM007402068886, chr=29
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 29 -O vg --prefix vg_map/ABOFRAM007402068886_29 && ls -sh vg_map/ABOFRAM007402068886_29_29.gam vg_map/ABOFRAM007402068886_29_29.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 646 has been submitted with SLURM jobid 11129075 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_29/11129075.log).
+
+[Thu Sep 19 08:07:20 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_19_19.gam, vg_map/ABOFRAM007402068886_19_19.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_19.log
+    jobid: 606
+    reason: Missing output files: vg_map/ABOFRAM007402068886_19_19.vg, vg_map/ABOFRAM007402068886_19_19.gam
+    wildcards: sample=ABOFRAM007402068886, chr=19
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 19 -O vg --prefix vg_map/ABOFRAM007402068886_19 && ls -sh vg_map/ABOFRAM007402068886_19_19.gam vg_map/ABOFRAM007402068886_19_19.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 606 has been submitted with SLURM jobid 11129076 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_19/11129076.log).
+
+[Thu Sep 19 08:07:20 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_7_7.gam, vg_map/ABOFRAM007402068886_7_7.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_7.log
+    jobid: 558
+    reason: Missing output files: vg_map/ABOFRAM007402068886_7_7.gam, vg_map/ABOFRAM007402068886_7_7.vg
+    wildcards: sample=ABOFRAM007402068886, chr=7
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 7 -O vg --prefix vg_map/ABOFRAM007402068886_7 && ls -sh vg_map/ABOFRAM007402068886_7_7.gam vg_map/ABOFRAM007402068886_7_7.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 558 has been submitted with SLURM jobid 11129077 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_7/11129077.log).
+
+[Thu Sep 19 08:07:20 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_16_16.gam, vg_map/ABOFRAM007402068886_16_16.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_16.log
+    jobid: 594
+    reason: Missing output files: vg_map/ABOFRAM007402068886_16_16.gam, vg_map/ABOFRAM007402068886_16_16.vg
+    wildcards: sample=ABOFRAM007402068886, chr=16
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 16 -O vg --prefix vg_map/ABOFRAM007402068886_16 && ls -sh vg_map/ABOFRAM007402068886_16_16.gam vg_map/ABOFRAM007402068886_16_16.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 594 has been submitted with SLURM jobid 11129078 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_16/11129078.log).
+
+[Thu Sep 19 08:07:20 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_26_26.gam, vg_map/ABOFRAM007402068886_26_26.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_26.log
+    jobid: 634
+    reason: Missing output files: vg_map/ABOFRAM007402068886_26_26.gam, vg_map/ABOFRAM007402068886_26_26.vg
+    wildcards: sample=ABOFRAM007402068886, chr=26
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 26 -O vg --prefix vg_map/ABOFRAM007402068886_26 && ls -sh vg_map/ABOFRAM007402068886_26_26.gam vg_map/ABOFRAM007402068886_26_26.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 634 has been submitted with SLURM jobid 11129079 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_26/11129079.log).
+
+[Thu Sep 19 08:07:21 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_23_23.gam, vg_map/ABOFRAM007402068886_23_23.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_23.log
+    jobid: 622
+    reason: Missing output files: vg_map/ABOFRAM007402068886_23_23.gam, vg_map/ABOFRAM007402068886_23_23.vg
+    wildcards: sample=ABOFRAM007402068886, chr=23
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 23 -O vg --prefix vg_map/ABOFRAM007402068886_23 && ls -sh vg_map/ABOFRAM007402068886_23_23.gam vg_map/ABOFRAM007402068886_23_23.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 622 has been submitted with SLURM jobid 11129080 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_23/11129080.log).
+
+[Thu Sep 19 08:07:21 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_1_1.gam, vg_map/ABOFRAM007402068886_1_1.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_1.log
+    jobid: 531
+    reason: Missing output files: vg_map/ABOFRAM007402068886_1_1.gam, vg_map/ABOFRAM007402068886_1_1.vg
+    wildcards: sample=ABOFRAM007402068886, chr=1
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 1 -O vg --prefix vg_map/ABOFRAM007402068886_1 && ls -sh vg_map/ABOFRAM007402068886_1_1.gam vg_map/ABOFRAM007402068886_1_1.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 531 has been submitted with SLURM jobid 11129081 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_1/11129081.log).
+
+[Thu Sep 19 08:07:21 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_3_3.gam, vg_map/ABOFRAM007402068886_3_3.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_3.log
+    jobid: 542
+    reason: Missing output files: vg_map/ABOFRAM007402068886_3_3.gam, vg_map/ABOFRAM007402068886_3_3.vg
+    wildcards: sample=ABOFRAM007402068886, chr=3
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 3 -O vg --prefix vg_map/ABOFRAM007402068886_3 && ls -sh vg_map/ABOFRAM007402068886_3_3.gam vg_map/ABOFRAM007402068886_3_3.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 542 has been submitted with SLURM jobid 11129083 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_3/11129083.log).
+
+[Thu Sep 19 08:07:21 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_2_2.gam, vg_map/ABOFRAM007402068886_2_2.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_2.log
+    jobid: 538
+    reason: Missing output files: vg_map/ABOFRAM007402068886_2_2.gam, vg_map/ABOFRAM007402068886_2_2.vg
+    wildcards: sample=ABOFRAM007402068886, chr=2
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 2 -O vg --prefix vg_map/ABOFRAM007402068886_2 && ls -sh vg_map/ABOFRAM007402068886_2_2.gam vg_map/ABOFRAM007402068886_2_2.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 538 has been submitted with SLURM jobid 11129084 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_2/11129084.log).
+
+[Thu Sep 19 08:07:21 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_18_18.gam, vg_map/ABOFRAM007402068886_18_18.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_18.log
+    jobid: 602
+    reason: Missing output files: vg_map/ABOFRAM007402068886_18_18.gam, vg_map/ABOFRAM007402068886_18_18.vg
+    wildcards: sample=ABOFRAM007402068886, chr=18
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 18 -O vg --prefix vg_map/ABOFRAM007402068886_18 && ls -sh vg_map/ABOFRAM007402068886_18_18.gam vg_map/ABOFRAM007402068886_18_18.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 602 has been submitted with SLURM jobid 11129085 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_18/11129085.log).
+
+[Thu Sep 19 08:07:22 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_28_28.gam, vg_map/ABOFRAM007402068886_28_28.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_28.log
+    jobid: 642
+    reason: Missing output files: vg_map/ABOFRAM007402068886_28_28.gam, vg_map/ABOFRAM007402068886_28_28.vg
+    wildcards: sample=ABOFRAM007402068886, chr=28
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 28 -O vg --prefix vg_map/ABOFRAM007402068886_28 && ls -sh vg_map/ABOFRAM007402068886_28_28.gam vg_map/ABOFRAM007402068886_28_28.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 642 has been submitted with SLURM jobid 11129086 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_28/11129086.log).
+
+[Thu Sep 19 08:07:22 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_11_11.gam, vg_map/ABOFRAM007402068886_11_11.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_11.log
+    jobid: 574
+    reason: Missing output files: vg_map/ABOFRAM007402068886_11_11.vg, vg_map/ABOFRAM007402068886_11_11.gam
+    wildcards: sample=ABOFRAM007402068886, chr=11
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 11 -O vg --prefix vg_map/ABOFRAM007402068886_11 && ls -sh vg_map/ABOFRAM007402068886_11_11.gam vg_map/ABOFRAM007402068886_11_11.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 574 has been submitted with SLURM jobid 11129087 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_11/11129087.log).
+
+[Thu Sep 19 08:07:22 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_25_25.gam, vg_map/ABOFRAM007402068886_25_25.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_25.log
+    jobid: 630
+    reason: Missing output files: vg_map/ABOFRAM007402068886_25_25.gam, vg_map/ABOFRAM007402068886_25_25.vg
+    wildcards: sample=ABOFRAM007402068886, chr=25
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 25 -O vg --prefix vg_map/ABOFRAM007402068886_25 && ls -sh vg_map/ABOFRAM007402068886_25_25.gam vg_map/ABOFRAM007402068886_25_25.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 630 has been submitted with SLURM jobid 11129088 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_25/11129088.log).
+
+[Thu Sep 19 08:07:22 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_13_13.gam, vg_map/ABOFRAM007402068886_13_13.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_13.log
+    jobid: 582
+    reason: Missing output files: vg_map/ABOFRAM007402068886_13_13.gam, vg_map/ABOFRAM007402068886_13_13.vg
+    wildcards: sample=ABOFRAM007402068886, chr=13
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 13 -O vg --prefix vg_map/ABOFRAM007402068886_13 && ls -sh vg_map/ABOFRAM007402068886_13_13.gam vg_map/ABOFRAM007402068886_13_13.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 582 has been submitted with SLURM jobid 11129097 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_13/11129097.log).
+
+[Thu Sep 19 08:07:22 2024]
+rule paragraph_details:
+    input: ../workflow/report/bam_stats/ABOFRAM007402068886.txt, ../workflow/report/depth/ABOFRAM007402068886.txt
+    output: paragraph/details_ABOFRAM007402068886.txt
+    log: logs/paragraph/para_details_ABOFRAM007402068886.log
+    jobid: 696
+    reason: Missing output files: paragraph/details_ABOFRAM007402068886.txt
+    wildcards: sample=ABOFRAM007402068886
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        #creating bash variable
+        read_length=`grep "average length" ../workflow/report/bam_stats/ABOFRAM007402068886.txt | cut -f3 ` #average read length
+        bam_depth=`cut -d ' ' -f1 ../workflow/report/depth/ABOFRAM007402068886.txt ' ` #average read depth
+        #execute R script to create details_sample.txt
+        ../workflow/scripts/paragraph_details.r ABOFRAM007402068886 ../workflow/report/bam_stats/ABOFRAM007402068886.txt $bam_depth $read_length
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 696 has been submitted with SLURM jobid 11129098 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_paragraph_details/ABOFRAM007402068886/11129098.log).
+
+[Thu Sep 19 08:07:23 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_9_9.gam, vg_map/ABOFRAM007402068886_9_9.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_9.log
+    jobid: 566
+    reason: Missing output files: vg_map/ABOFRAM007402068886_9_9.vg, vg_map/ABOFRAM007402068886_9_9.gam
+    wildcards: sample=ABOFRAM007402068886, chr=9
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 9 -O vg --prefix vg_map/ABOFRAM007402068886_9 && ls -sh vg_map/ABOFRAM007402068886_9_9.gam vg_map/ABOFRAM007402068886_9_9.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 566 has been submitted with SLURM jobid 11129099 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_9/11129099.log).
+
+[Thu Sep 19 08:07:23 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_5_5.gam, vg_map/ABOFRAM007402068886_5_5.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_5.log
+    jobid: 550
+    reason: Missing output files: vg_map/ABOFRAM007402068886_5_5.gam, vg_map/ABOFRAM007402068886_5_5.vg
+    wildcards: sample=ABOFRAM007402068886, chr=5
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 5 -O vg --prefix vg_map/ABOFRAM007402068886_5 && ls -sh vg_map/ABOFRAM007402068886_5_5.gam vg_map/ABOFRAM007402068886_5_5.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 550 has been submitted with SLURM jobid 11129100 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_5/11129100.log).
+
+[Thu Sep 19 08:07:23 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_10_10.gam, vg_map/ABOFRAM007402068886_10_10.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_10.log
+    jobid: 570
+    reason: Missing output files: vg_map/ABOFRAM007402068886_10_10.gam, vg_map/ABOFRAM007402068886_10_10.vg
+    wildcards: sample=ABOFRAM007402068886, chr=10
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 10 -O vg --prefix vg_map/ABOFRAM007402068886_10 && ls -sh vg_map/ABOFRAM007402068886_10_10.gam vg_map/ABOFRAM007402068886_10_10.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 570 has been submitted with SLURM jobid 11129101 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_10/11129101.log).
+
+[Thu Sep 19 08:07:23 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_20_20.gam, vg_map/ABOFRAM007402068886_20_20.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_20.log
+    jobid: 610
+    reason: Missing output files: vg_map/ABOFRAM007402068886_20_20.gam, vg_map/ABOFRAM007402068886_20_20.vg
+    wildcards: sample=ABOFRAM007402068886, chr=20
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 20 -O vg --prefix vg_map/ABOFRAM007402068886_20 && ls -sh vg_map/ABOFRAM007402068886_20_20.gam vg_map/ABOFRAM007402068886_20_20.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 610 has been submitted with SLURM jobid 11129102 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_20/11129102.log).
+
+[Thu Sep 19 08:07:23 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_X_X.gam, vg_map/ABOFRAM007402068886_X_X.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_X.log
+    jobid: 650
+    reason: Missing output files: vg_map/ABOFRAM007402068886_X_X.vg, vg_map/ABOFRAM007402068886_X_X.gam
+    wildcards: sample=ABOFRAM007402068886, chr=X
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p X -O vg --prefix vg_map/ABOFRAM007402068886_X && ls -sh vg_map/ABOFRAM007402068886_X_X.gam vg_map/ABOFRAM007402068886_X_X.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 650 has been submitted with SLURM jobid 11129103 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_X/11129103.log).
+
+[Thu Sep 19 08:07:24 2024]
+rule giraffe_chunk:
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_6_6.gam, vg_map/ABOFRAM007402068886_6_6.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_6.log
+    jobid: 554
+    reason: Missing output files: vg_map/ABOFRAM007402068886_6_6.vg, vg_map/ABOFRAM007402068886_6_6.gam
+    wildcards: sample=ABOFRAM007402068886, chr=6
+    resources: mem_mb=28610, mem_mib=7630, disk_mb=142990, disk_mib=136366, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 6 -O vg --prefix vg_map/ABOFRAM007402068886_6 && ls -sh vg_map/ABOFRAM007402068886_6_6.gam vg_map/ABOFRAM007402068886_6_6.vg
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 554 has been submitted with SLURM jobid 11129104 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_6/11129104.log).
+[Thu Sep 19 08:09:28 2024]
+Error in rule paragraph_details:
+    message: SLURM-job '11129098' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 696
+    input: ../workflow/report/bam_stats/ABOFRAM007402068886.txt, ../workflow/report/depth/ABOFRAM007402068886.txt
+    output: paragraph/details_ABOFRAM007402068886.txt
+    log: logs/paragraph/para_details_ABOFRAM007402068886.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_paragraph_details/ABOFRAM007402068886/11129098.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/582ab6abb2ad1eb8c7f583e43f65ac4b_
+    shell:
+        
+        #creating bash variable
+        read_length=`grep "average length" ../workflow/report/bam_stats/ABOFRAM007402068886.txt | cut -f3 ` #average read length
+        bam_depth=`cut -d ' ' -f1 ../workflow/report/depth/ABOFRAM007402068886.txt ' ` #average read depth
+        #execute R script to create details_sample.txt
+        ../workflow/scripts/paragraph_details.r ABOFRAM007402068886 ../workflow/report/bam_stats/ABOFRAM007402068886.txt $bam_depth $read_length
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129098
+
+[Thu Sep 19 08:42:20 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129079' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 634
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_26_26.gam, vg_map/ABOFRAM007402068886_26_26.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_26.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_26/11129079.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 26 -O vg --prefix vg_map/ABOFRAM007402068886_26 && ls -sh vg_map/ABOFRAM007402068886_26_26.gam vg_map/ABOFRAM007402068886_26_26.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129079
+
+[Thu Sep 19 08:42:20 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129080' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 622
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_23_23.gam, vg_map/ABOFRAM007402068886_23_23.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_23.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_23/11129080.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 23 -O vg --prefix vg_map/ABOFRAM007402068886_23 && ls -sh vg_map/ABOFRAM007402068886_23_23.gam vg_map/ABOFRAM007402068886_23_23.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129080
+
+[Thu Sep 19 08:45:20 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129078' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 594
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_16_16.gam, vg_map/ABOFRAM007402068886_16_16.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_16.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_16/11129078.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 16 -O vg --prefix vg_map/ABOFRAM007402068886_16 && ls -sh vg_map/ABOFRAM007402068886_16_16.gam vg_map/ABOFRAM007402068886_16_16.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129078
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129066' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 638
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_27_27.gam, vg_map/ABOFRAM007402068886_27_27.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_27.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_27/11129066.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 27 -O vg --prefix vg_map/ABOFRAM007402068886_27 && ls -sh vg_map/ABOFRAM007402068886_27_27.gam vg_map/ABOFRAM007402068886_27_27.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129066
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129068' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 618
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_22_22.gam, vg_map/ABOFRAM007402068886_22_22.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_22.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_22/11129068.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 22 -O vg --prefix vg_map/ABOFRAM007402068886_22 && ls -sh vg_map/ABOFRAM007402068886_22_22.gam vg_map/ABOFRAM007402068886_22_22.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129068
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129070' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 598
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_17_17.gam, vg_map/ABOFRAM007402068886_17_17.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_17.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_17/11129070.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 17 -O vg --prefix vg_map/ABOFRAM007402068886_17 && ls -sh vg_map/ABOFRAM007402068886_17_17.gam vg_map/ABOFRAM007402068886_17_17.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129070
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129073' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 626
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_24_24.gam, vg_map/ABOFRAM007402068886_24_24.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_24.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_24/11129073.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 24 -O vg --prefix vg_map/ABOFRAM007402068886_24 && ls -sh vg_map/ABOFRAM007402068886_24_24.gam vg_map/ABOFRAM007402068886_24_24.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129073
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129074' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 614
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_21_21.gam, vg_map/ABOFRAM007402068886_21_21.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_21.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_21/11129074.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 21 -O vg --prefix vg_map/ABOFRAM007402068886_21 && ls -sh vg_map/ABOFRAM007402068886_21_21.gam vg_map/ABOFRAM007402068886_21_21.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129074
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129075' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 646
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_29_29.gam, vg_map/ABOFRAM007402068886_29_29.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_29.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_29/11129075.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 29 -O vg --prefix vg_map/ABOFRAM007402068886_29 && ls -sh vg_map/ABOFRAM007402068886_29_29.gam vg_map/ABOFRAM007402068886_29_29.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129075
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129085' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 602
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_18_18.gam, vg_map/ABOFRAM007402068886_18_18.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_18.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_18/11129085.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 18 -O vg --prefix vg_map/ABOFRAM007402068886_18 && ls -sh vg_map/ABOFRAM007402068886_18_18.gam vg_map/ABOFRAM007402068886_18_18.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129085
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129086' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 642
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_28_28.gam, vg_map/ABOFRAM007402068886_28_28.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_28.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_28/11129086.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 28 -O vg --prefix vg_map/ABOFRAM007402068886_28 && ls -sh vg_map/ABOFRAM007402068886_28_28.gam vg_map/ABOFRAM007402068886_28_28.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129086
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129087' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 574
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_11_11.gam, vg_map/ABOFRAM007402068886_11_11.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_11.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_11/11129087.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 11 -O vg --prefix vg_map/ABOFRAM007402068886_11 && ls -sh vg_map/ABOFRAM007402068886_11_11.gam vg_map/ABOFRAM007402068886_11_11.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129087
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129088' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 630
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_25_25.gam, vg_map/ABOFRAM007402068886_25_25.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_25.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_25/11129088.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 25 -O vg --prefix vg_map/ABOFRAM007402068886_25 && ls -sh vg_map/ABOFRAM007402068886_25_25.gam vg_map/ABOFRAM007402068886_25_25.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129088
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129103' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 650
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_X_X.gam, vg_map/ABOFRAM007402068886_X_X.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_X.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_X/11129103.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p X -O vg --prefix vg_map/ABOFRAM007402068886_X && ls -sh vg_map/ABOFRAM007402068886_X_X.gam vg_map/ABOFRAM007402068886_X_X.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129103
+
+[Thu Sep 19 08:48:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129104' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 554
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_6_6.gam, vg_map/ABOFRAM007402068886_6_6.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_6.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_6/11129104.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 6 -O vg --prefix vg_map/ABOFRAM007402068886_6 && ls -sh vg_map/ABOFRAM007402068886_6_6.gam vg_map/ABOFRAM007402068886_6_6.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129104
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129065' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 590
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_15_15.gam, vg_map/ABOFRAM007402068886_15_15.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_15.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_15/11129065.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 15 -O vg --prefix vg_map/ABOFRAM007402068886_15 && ls -sh vg_map/ABOFRAM007402068886_15_15.gam vg_map/ABOFRAM007402068886_15_15.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129065
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129067' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 578
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_12_12.gam, vg_map/ABOFRAM007402068886_12_12.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_12.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_12/11129067.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 12 -O vg --prefix vg_map/ABOFRAM007402068886_12 && ls -sh vg_map/ABOFRAM007402068886_12_12.gam vg_map/ABOFRAM007402068886_12_12.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129067
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129071' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 586
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_14_14.gam, vg_map/ABOFRAM007402068886_14_14.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_14.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_14/11129071.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 14 -O vg --prefix vg_map/ABOFRAM007402068886_14 && ls -sh vg_map/ABOFRAM007402068886_14_14.gam vg_map/ABOFRAM007402068886_14_14.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129071
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129072' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 546
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_4_4.gam, vg_map/ABOFRAM007402068886_4_4.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_4.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_4/11129072.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 4 -O vg --prefix vg_map/ABOFRAM007402068886_4 && ls -sh vg_map/ABOFRAM007402068886_4_4.gam vg_map/ABOFRAM007402068886_4_4.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129072
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129076' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 606
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_19_19.gam, vg_map/ABOFRAM007402068886_19_19.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_19.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_19/11129076.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 19 -O vg --prefix vg_map/ABOFRAM007402068886_19 && ls -sh vg_map/ABOFRAM007402068886_19_19.gam vg_map/ABOFRAM007402068886_19_19.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129076
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129077' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 558
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_7_7.gam, vg_map/ABOFRAM007402068886_7_7.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_7.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_7/11129077.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 7 -O vg --prefix vg_map/ABOFRAM007402068886_7 && ls -sh vg_map/ABOFRAM007402068886_7_7.gam vg_map/ABOFRAM007402068886_7_7.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129077
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129083' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 542
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_3_3.gam, vg_map/ABOFRAM007402068886_3_3.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_3.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_3/11129083.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 3 -O vg --prefix vg_map/ABOFRAM007402068886_3 && ls -sh vg_map/ABOFRAM007402068886_3_3.gam vg_map/ABOFRAM007402068886_3_3.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129083
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129084' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 538
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_2_2.gam, vg_map/ABOFRAM007402068886_2_2.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_2.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_2/11129084.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 2 -O vg --prefix vg_map/ABOFRAM007402068886_2 && ls -sh vg_map/ABOFRAM007402068886_2_2.gam vg_map/ABOFRAM007402068886_2_2.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129084
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129097' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 582
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_13_13.gam, vg_map/ABOFRAM007402068886_13_13.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_13.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_13/11129097.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 13 -O vg --prefix vg_map/ABOFRAM007402068886_13 && ls -sh vg_map/ABOFRAM007402068886_13_13.gam vg_map/ABOFRAM007402068886_13_13.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129097
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129099' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 566
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_9_9.gam, vg_map/ABOFRAM007402068886_9_9.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_9.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_9/11129099.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 9 -O vg --prefix vg_map/ABOFRAM007402068886_9 && ls -sh vg_map/ABOFRAM007402068886_9_9.gam vg_map/ABOFRAM007402068886_9_9.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129099
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129101' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 570
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_10_10.gam, vg_map/ABOFRAM007402068886_10_10.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_10.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_10/11129101.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 10 -O vg --prefix vg_map/ABOFRAM007402068886_10 && ls -sh vg_map/ABOFRAM007402068886_10_10.gam vg_map/ABOFRAM007402068886_10_10.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129101
+
+[Thu Sep 19 08:51:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129102' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 610
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_20_20.gam, vg_map/ABOFRAM007402068886_20_20.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_20.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_20/11129102.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 20 -O vg --prefix vg_map/ABOFRAM007402068886_20 && ls -sh vg_map/ABOFRAM007402068886_20_20.gam vg_map/ABOFRAM007402068886_20_20.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129102
+
+[Thu Sep 19 08:54:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129069' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 562
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_8_8.gam, vg_map/ABOFRAM007402068886_8_8.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_8.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_8/11129069.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 8 -O vg --prefix vg_map/ABOFRAM007402068886_8 && ls -sh vg_map/ABOFRAM007402068886_8_8.gam vg_map/ABOFRAM007402068886_8_8.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129069
+
+[Thu Sep 19 08:54:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129081' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 531
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_1_1.gam, vg_map/ABOFRAM007402068886_1_1.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_1.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_1/11129081.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 1 -O vg --prefix vg_map/ABOFRAM007402068886_1 && ls -sh vg_map/ABOFRAM007402068886_1_1.gam vg_map/ABOFRAM007402068886_1_1.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129081
+
+[Thu Sep 19 08:54:21 2024]
+Error in rule giraffe_chunk:
+    message: SLURM-job '11129100' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 550
+    input: vg_vg/ABOFRAM007402068886_wg.xg, vg_map/ABOFRAM007402068886.gam
+    output: vg_map/ABOFRAM007402068886_5_5.gam, vg_map/ABOFRAM007402068886_5_5.vg
+    log: logs/vg/giraffe_chunk_ABOFRAM007402068886_5.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_giraffe_chunk/ABOFRAM007402068886_5/11129100.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/8298b2fc19351cec72921577803a8d37_
+    shell:
+        
+        vg chunk -x vg_vg/ABOFRAM007402068886_wg.xg -g -a vg_map/ABOFRAM007402068886.gam -C -p 5 -O vg --prefix vg_map/ABOFRAM007402068886_5 && ls -sh vg_map/ABOFRAM007402068886_5_5.gam vg_map/ABOFRAM007402068886_5_5.vg
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11129100
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-09-19T080659.249921.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
