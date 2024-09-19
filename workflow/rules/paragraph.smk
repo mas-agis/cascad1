@@ -3,6 +3,7 @@ import re
 
 rule paragraph_details:
     input:
+        "bam_files/recal_{sample}.bam",
         "../workflow/report/bam_stats/{sample}.txt", 
         "../workflow/report/depth/{sample}.txt"
     output:
@@ -18,7 +19,7 @@ rule paragraph_details:
         r"""
         #creating bash variable
         read_length=`grep "average length" {input[0]} | cut -f3 ` #average read length
-        bam_depth=`cut -d ' ' -f1 {input[1]} ' ` #average read depth
+        bam_depth=`cut -d ' ' -f1 {input[1]} ` #average read depth
         #execute R script to create details_sample.txt
         {params.r_script} {wildcards.sample} {input[0]} $bam_depth $read_length
         """

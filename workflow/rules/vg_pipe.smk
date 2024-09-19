@@ -113,15 +113,28 @@ rule giraffe_chunk:
         "vg_vg/{sample}_wg.xg",
         "vg_map/{sample}.gam"
     output:
-        temp("vg_map/{sample}_{chr}_{chr}.gam"),
-        temp("vg_map/{sample}_{chr}_{chr}.vg") 
+        temp("vg_map/{sample}_{chr}_{chr}.gam")
     conda:
         "../envs/vg.yml"
     log:
         stderr="logs/vg/giraffe_chunk_{sample}_{chr}.log"
     shell:
         r"""
-        vg chunk -x {input[0]} -g -a {input[1]} -C -p {wildcards.chr} -O vg --prefix vg_map/{wildcards.sample}_{wildcards.chr} && ls -sh {output}
+        vg chunk -x {input[0]} -a {input[1]} -C -p {wildcards.chr} -O pg --prefix vg_map/{wildcards.sample}_{wildcards.chr} && ls -sh {output}
+        """
+
+rule giraffe_chunk_vg:
+    input:
+        "vg_vg/{sample}_wg.xg"
+    output:
+        temp("vg_map/{sample}_{chr}_{chr}.vg")
+    conda:
+        "../envs/vg.yml"
+    log:
+        stderr="logs/vg/giraffe_chunk_vg_{sample}_{chr}.log"
+    shell:
+        r"""
+        vg chunk -x {input[0]} -C -p {wildcards.chr} > {output}
         """
 
 rule giraffe_snarls:
@@ -171,7 +184,7 @@ rule giraffe_call:
         r"""
         vg call {input[0]} -k {input[1]} -r {input[2]} -s {wildcards.sample} --threads 3 > {output} 
         """
-    
+
 rule giraffe_concat:
     input:
         expand("vg_call/{{sample}}_{chr}.vcf", chr=CHROM)
