@@ -7,7 +7,7 @@ rule paragraph_details:
         "../workflow/report/bam_stats/{sample}.txt", 
         "../workflow/report/depth/{sample}.txt"
     output:
-        "paragraph/details_{sample}.txt" 
+        temp("paragraph/details_{sample}.txt") 
     conda:
         "../envs/paragraph.yml"
     params:
@@ -58,5 +58,6 @@ rule filter_paragraph:
     shell:
         r"""
         bcftools view -s {wildcards.sample} {input} | bcftools view -e 'GT="mis"' | bgzip -c > {output} && tabix -p vcf {output}
+        rm -r paragraph/temp_{wildcards.sample}/
         """
  

@@ -50,7 +50,7 @@ rule gatk_apply_recalibration:
         "bam_files/reDup_{sample}.bam",
         "bam_files/{sample}.recal.table"
     output:
-        temp("bam_files/recal_{sample}.bam")
+        "bam_files/recal_{sample}.bam"
     conda:
         "../envs/mapping_min.yml"
     log:

@@ -26,8 +26,8 @@ CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
 # Target rules - step by step
 rule all:
     input:
-       [expand("bam_files/recal_{sample}.bam", sample=samples.index),        #mapping the short-reads - mapping.smk
-        expand("../workflow/report/bam_stats/{sample}.txt", sample=samples.index), #bamstats for each sample
+#       [expand("bam_files/recal_{sample}.bam", sample=samples.index),        #mapping the short-reads - mapping.smk
+        [expand("../workflow/report/bam_stats/{sample}.txt", sample=samples.index), #bamstats for each sample
         expand("../workflow/report/depth/{sample}.txt", sample=samples.index),
 #       expand("vg_vg/{sample}_pt{chr}.vg", sample=samples.index, chr=CHROM), #creating vg for each chr of each individual - vg_DEL.smk
 #       expand("vg_vg/{sample}_sorting_dag.txt", sample=samples.index),       #connect the vg for all chr of each individual - vg_DEL.smk
