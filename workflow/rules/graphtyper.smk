@@ -16,7 +16,7 @@ rule graphtyper_genotype_sv:
     shell:
         r"""
         mkdir -p graphtyper/temp_{wildcards.sample} 
-        graphtyper genotype_sv {input[0]} {input[1]} --sam {input[2]} --output graphtyper/temp_{wildcards.sample}/ --threads 1 --verbose --region_file {input[3]} --verbose && touch {output}
+        graphtyper genotype_sv {input[0]} {input[1]} --sam {input[2]} --output graphtyper/temp_{wildcards.sample}/ --threads 7 --verbose --region_file {input[3]} --verbose && touch {output}
         """
 
 rule graphtyper_list_files:

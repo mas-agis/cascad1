@@ -44928,3 +44928,327 @@ rule gatk_apply_recalibration:
 gatk ApplyBQSR -R /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa -I bam_files/reDup_ABOFRAM007402247175.bam -O bam_files/recal_ABOFRAM007402247175.bam -bqsr bam_files/ABOFRAM007402247175.recal.table
 No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
 Job 62 has been submitted with SLURM jobid 11294661 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_gatk_apply_recalibration/ABOFRAM007402247175/11294661.log).
+[Tue Sep 24 20:23:13 2024]
+Finished job 62.
+1252 of 1273 steps (98%) done
+Removing temporary output bam_files/reDup_ABOFRAM007402247175.bam.
+Removing temporary output bam_files/ABOFRAM007402247175.recal.table.
+Select jobs to execute...
+Execute 7 jobs...
+
+[Tue Sep 24 20:23:14 2024]
+rule delly_calling:
+    input: /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa, bam_files/recal_ABOFRAM007402247175.bam
+    output: delly/ABOFRAM007402247175.vcf
+    log: logs/delly/delly_calling_ABOFRAM007402247175.log
+    jobid: 3086
+    reason: Missing output files: delly/ABOFRAM007402247175.vcf; Input files updated by another job: bam_files/recal_ABOFRAM007402247175.bam
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=277112, disk_mib=264275, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        delly call -g /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa bam_files/recal_ABOFRAM007402247175.bam --svtype DEL > delly/ABOFRAM007402247175.vcf
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3086 has been submitted with SLURM jobid 11381494 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_delly_calling/ABOFRAM007402247175/11381494.log).
+
+[Tue Sep 24 20:23:14 2024]
+rule bam_json:
+    input: bam_files/recal_ABOFRAM007402247175.bam
+    output: bam_files/recal_ABOFRAM007402247175.bam.json
+    log: logs/svtyper/bam_json_ABOFRAM007402247175.log
+    jobid: 2947
+    reason: Missing output files: bam_files/recal_ABOFRAM007402247175.bam.json; Input files updated by another job: bam_files/recal_ABOFRAM007402247175.bam
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=271783, disk_mib=259193, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+svtyper -B bam_files/recal_ABOFRAM007402247175.bam -l bam_files/recal_ABOFRAM007402247175.bam.json
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 2947 has been submitted with SLURM jobid 11381495 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_bam_json/ABOFRAM007402247175/11381495.log).
+
+[Tue Sep 24 20:23:14 2024]
+rule bam_depth:
+    input: bam_files/recal_ABOFRAM007402247175.bam
+    output: ../workflow/report/depth/ABOFRAM007402247175.txt
+    log: logs/bwmap/depth_ABOFRAM007402247175.log
+    jobid: 88
+    reason: Missing output files: ../workflow/report/depth/ABOFRAM007402247175.txt; Input files updated by another job: bam_files/recal_ABOFRAM007402247175.bam
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=271783, disk_mib=259193, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+samtools depth bam_files/recal_ABOFRAM007402247175.bam | awk '{sum+=$3} END{print sum/NR}' > ../workflow/report/depth/ABOFRAM007402247175.txt
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 88 has been submitted with SLURM jobid 11381496 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_bam_depth/ABOFRAM007402247175/11381496.log).
+
+[Tue Sep 24 20:23:14 2024]
+rule smoove_lumpy:
+    input: /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa, bam_files/recal_ABOFRAM007402247175.bam
+    output: lumpy/ABOFRAM007402247175/ABOFRAM007402247175-smoove.vcf.gz
+    log: logs/smoove/smoove_lumpy_ABOFRAM007402247175.log
+    jobid: 3174
+    reason: Missing output files: lumpy/ABOFRAM007402247175/ABOFRAM007402247175-smoove.vcf.gz; Input files updated by another job: bam_files/recal_ABOFRAM007402247175.bam
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=277112, disk_mib=264275, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        mkdir -p lumpy/ABOFRAM007402247175
+        smoove call --name ABOFRAM007402247175 --fasta /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa -p 1 --outdir lumpy/ABOFRAM007402247175 bam_files/recal_ABOFRAM007402247175.bam 
+        ls -sh lumpy/ABOFRAM007402247175/ABOFRAM007402247175-smoove.vcf.gz
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3174 has been submitted with SLURM jobid 11381497 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_smoove_lumpy/ABOFRAM007402247175/11381497.log).
+
+[Tue Sep 24 20:23:15 2024]
+rule manta_precomp:
+    input: bam_files/recal_ABOFRAM007402247175.bam, /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa
+    output: manta/ABOFRAM007402247175/runWorkflow.py
+    log: logs/manta/manta_precomp_ABOFRAM007402247175.log
+    jobid: 3129
+    reason: Missing output files: manta/ABOFRAM007402247175/runWorkflow.py; Input files updated by another job: bam_files/recal_ABOFRAM007402247175.bam
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=277112, disk_mib=264275, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        mkdir -p manta/ABOFRAM007402247175
+        configManta.py --normalBam bam_files/recal_ABOFRAM007402247175.bam --referenceFasta /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa --runDir manta/ABOFRAM007402247175
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3129 has been submitted with SLURM jobid 11381498 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_manta_precomp/ABOFRAM007402247175/11381498.log).
+
+[Tue Sep 24 20:23:15 2024]
+rule graphtyper_genotype_sv:
+    input: /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa, /work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/ABOFRAM007402247175_pbsv.vcf.gz, bam_files/recal_ABOFRAM007402247175.bam, /work/project/CASCAD/mnaji/sm_folder/resources/autX.txt
+    output: graphtyper/ABOFRAM007402247175_okay.txt
+    log: logs/graphtyper/genotype_sv_ABOFRAM007402247175.log
+    jobid: 3007
+    reason: Missing output files: graphtyper/ABOFRAM007402247175_okay.txt; Input files updated by another job: bam_files/recal_ABOFRAM007402247175.bam
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=277119, disk_mib=264282, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        mkdir -p graphtyper/temp_ABOFRAM007402247175 
+        graphtyper genotype_sv /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa /work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/ABOFRAM007402247175_pbsv.vcf.gz --sam bam_files/recal_ABOFRAM007402247175.bam --output graphtyper/temp_ABOFRAM007402247175/ --threads 1 --verbose --region_file /work/project/CASCAD/mnaji/sm_folder/resources/autX.txt --verbose && touch graphtyper/ABOFRAM007402247175_okay.txt
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3007 has been submitted with SLURM jobid 11381499 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_graphtyper_genotype_sv/ABOFRAM007402247175/11381499.log).
+
+[Tue Sep 24 20:23:15 2024]
+rule bam_stats:
+    input: bam_files/recal_ABOFRAM007402247175.bam
+    output: ../workflow/report/bam_stats/ABOFRAM007402247175.txt
+    log: logs/bwmap/bam_stats_ABOFRAM007402247175.log
+    jobid: 61
+    reason: Missing output files: ../workflow/report/bam_stats/ABOFRAM007402247175.txt; Input files updated by another job: bam_files/recal_ABOFRAM007402247175.bam
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=271783, disk_mib=259193, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+samtools stats bam_files/recal_ABOFRAM007402247175.bam > ../workflow/report/bam_stats/ABOFRAM007402247175.txt
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 61 has been submitted with SLURM jobid 11381500 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_bam_stats/ABOFRAM007402247175/11381500.log).
+[Tue Sep 24 20:24:14 2024]
+Finished job 3129.
+1253 of 1273 steps (98%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Sep 24 20:24:14 2024]
+rule manta_comp:
+    input: manta/ABOFRAM007402247175/runWorkflow.py
+    output: manta/ABOFRAM007402247175/results/variants/diploidSV.vcf.gz
+    log: logs/manta/manta_comp_ABOFRAM007402247175.log
+    jobid: 3128
+    reason: Missing output files: manta/ABOFRAM007402247175/results/variants/diploidSV.vcf.gz; Input files updated by another job: manta/ABOFRAM007402247175/runWorkflow.py
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=28610, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=30GB, time=28800
+
+
+        python2.7 manta/ABOFRAM007402247175/runWorkflow.py && ls -sh manta/ABOFRAM007402247175/results/variants/diploidSV.vcf.gz
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3128 has been submitted with SLURM jobid 11381502 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_manta_comp/ABOFRAM007402247175/11381502.log).
+[Tue Sep 24 20:24:24 2024]
+Finished job 2947.
+1254 of 1273 steps (99%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Sep 24 20:24:24 2024]
+rule svtyper_sso:
+    input: svtyper/modif_panel1_ABOFRAM007402247175.vcf, bam_files/recal_ABOFRAM007402247175.bam, bam_files/recal_ABOFRAM007402247175.bam.json
+    output: svtyper/ABOFRAM007402247175_svtper.vcf.gz
+    log: logs/svtyper/svtyper_sso_ABOFRAM007402247175.log
+    jobid: 2945
+    reason: Missing output files: svtyper/ABOFRAM007402247175_svtper.vcf.gz; Input files updated by another job: svtyper/modif_panel1_ABOFRAM007402247175.vcf, bam_files/recal_ABOFRAM007402247175.bam.json, bam_files/recal_ABOFRAM007402247175.bam
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=271812, disk_mib=259221, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+svtyper-sso --batch_size 1000 --max_reads 1000000 -i svtyper/modif_panel1_ABOFRAM007402247175.vcf -B bam_files/recal_ABOFRAM007402247175.bam -l bam_files/recal_ABOFRAM007402247175.bam.json --max_ci_dist 4 --split_weight 1 --disc_weight 1 | bgzip -c > svtyper/ABOFRAM007402247175_svtper.vcf.gz
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 2945 has been submitted with SLURM jobid 11381503 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_svtyper_sso/ABOFRAM007402247175/11381503.log).
+[Tue Sep 24 20:31:55 2024]
+Finished job 2945.
+1255 of 1273 steps (99%) done
+Removing temporary output svtyper/modif_panel1_ABOFRAM007402247175.vcf.
+Removing temporary output bam_files/recal_ABOFRAM007402247175.bam.json.
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Sep 24 20:31:55 2024]
+rule svtyper_filter:
+    input: svtyper/ABOFRAM007402247175_svtper.vcf.gz
+    output: svtyper/noMis_ABOFRAM007402247175_svtper.vcf.gz
+    log: logs/svtyper/svtyper_filter_ABOFRAM007402247175.log
+    jobid: 2944
+    reason: Missing output files: svtyper/noMis_ABOFRAM007402247175_svtper.vcf.gz; Input files updated by another job: svtyper/ABOFRAM007402247175_svtper.vcf.gz
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+bcftools view -e 'GT="mis"' svtyper/ABOFRAM007402247175_svtper.vcf.gz | bgzip -c > svtyper/noMis_ABOFRAM007402247175_svtper.vcf.gz && tabix -p vcf svtyper/noMis_ABOFRAM007402247175_svtper.vcf.gz 
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 2944 has been submitted with SLURM jobid 11381507 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_svtyper_filter/ABOFRAM007402247175/11381507.log).
+[Tue Sep 24 20:32:55 2024]
+Finished job 2944.
+1256 of 1273 steps (99%) done
+Removing temporary output svtyper/ABOFRAM007402247175_svtper.vcf.gz.
+[Tue Sep 24 20:55:38 2024]
+Error in rule manta_comp:
+    message: SLURM-job '11381502' failed, SLURM status is: 'CANCELLED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 3128
+    input: manta/ABOFRAM007402247175/runWorkflow.py
+    output: manta/ABOFRAM007402247175/results/variants/diploidSV.vcf.gz
+    log: logs/manta/manta_comp_ABOFRAM007402247175.log, /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_manta_comp/ABOFRAM007402247175/11381502.log (check log file(s) for error details)
+    conda-env: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/conda/222d351fbcfed28c8aad9b76dfc23ede_
+    shell:
+        
+        python2.7 manta/ABOFRAM007402247175/runWorkflow.py && ls -sh manta/ABOFRAM007402247175/results/variants/diploidSV.vcf.gz
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 11381502
+
+[Tue Sep 24 20:55:38 2024]
+Finished job 88.
+1257 of 1273 steps (99%) done
+[Tue Sep 24 20:57:18 2024]
+Finished job 3174.
+1258 of 1273 steps (99%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Sep 24 20:57:18 2024]
+rule smoove_sort:
+    input: lumpy/ABOFRAM007402247175/ABOFRAM007402247175-smoove.vcf.gz
+    output: lumpy/ABOFRAM007402247175/sorted_lumpy_ABOFRAM007402247175.vcf.gz
+    log: logs/lumpy/smoove_filter_ABOFRAM007402247175.log
+    jobid: 3173
+    reason: Missing output files: lumpy/ABOFRAM007402247175/sorted_lumpy_ABOFRAM007402247175.vcf.gz; Input files updated by another job: lumpy/ABOFRAM007402247175/ABOFRAM007402247175-smoove.vcf.gz
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        bcftools sort lumpy/ABOFRAM007402247175/ABOFRAM007402247175-smoove.vcf.gz -O z -o lumpy/ABOFRAM007402247175/sorted_lumpy_ABOFRAM007402247175.vcf.gz
+        tabix -p vcf lumpy/ABOFRAM007402247175/sorted_lumpy_ABOFRAM007402247175.vcf.gz;
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3173 has been submitted with SLURM jobid 11382692 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_smoove_sort/ABOFRAM007402247175/11382692.log).
+[Tue Sep 24 20:58:59 2024]
+Finished job 3173.
+1259 of 1273 steps (99%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Sep 24 20:58:59 2024]
+rule smoove_filter:
+    input: /work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed, lumpy/ABOFRAM007402247175/sorted_lumpy_ABOFRAM007402247175.vcf.gz
+    output: lumpy/lumpy_ABOFRAM007402247175.vcf.gz
+    log: logs/lumpy/smoove_filter_ABOFRAM007402247175.log
+    jobid: 3172
+    reason: Missing output files: lumpy/lumpy_ABOFRAM007402247175.vcf.gz; Input files updated by another job: lumpy/ABOFRAM007402247175/sorted_lumpy_ABOFRAM007402247175.vcf.gz
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        #filter the output
+        bcftools filter -R /work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed lumpy/ABOFRAM007402247175/sorted_lumpy_ABOFRAM007402247175.vcf.gz | bcftools filter -i 'SVTYPE="DEL"' | bgzip -c > lumpy/lumpy_ABOFRAM007402247175.vcf.gz;
+        tabix -p vcf lumpy/lumpy_ABOFRAM007402247175.vcf.gz;
+        #remove calculation folder
+        rm -r lumpy/ABOFRAM007402247175
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3172 has been submitted with SLURM jobid 11382788 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_smoove_filter/ABOFRAM007402247175/11382788.log).
+[Tue Sep 24 21:00:39 2024]
+Finished job 3172.
+1260 of 1273 steps (99%) done
+[Tue Sep 24 21:38:14 2024]
+Finished job 61.
+1261 of 1273 steps (99%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Sep 24 21:38:14 2024]
+rule paragraph_details:
+    input: bam_files/recal_ABOFRAM007402247175.bam, ../workflow/report/bam_stats/ABOFRAM007402247175.txt, ../workflow/report/depth/ABOFRAM007402247175.txt
+    output: paragraph/details_ABOFRAM007402247175.txt
+    log: logs/paragraph/para_details_ABOFRAM007402247175.log
+    jobid: 3054
+    reason: Missing output files: paragraph/details_ABOFRAM007402247175.txt; Input files updated by another job: bam_files/recal_ABOFRAM007402247175.bam, ../workflow/report/bam_stats/ABOFRAM007402247175.txt, ../workflow/report/depth/ABOFRAM007402247175.txt
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=7630, disk_mb=271783, disk_mib=259193, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        #creating bash variable
+        read_length=`grep "average length" ../workflow/report/bam_stats/ABOFRAM007402247175.txt | cut -f3 ` #average read length
+        bam_depth=`cut -d ' ' -f1 ../workflow/report/depth/ABOFRAM007402247175.txt ` #average read depth
+        #execute R script to create details_sample.txt
+        ../workflow/scripts/paragraph_details.r ABOFRAM007402247175 bam_files/recal_ABOFRAM007402247175.bam $bam_depth $read_length
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3054 has been submitted with SLURM jobid 11383912 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_paragraph_details/ABOFRAM007402247175/11383912.log).
+[Tue Sep 24 21:39:14 2024]
+Finished job 3086.
+1262 of 1273 steps (99%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Sep 24 21:39:14 2024]
+rule delly_filter:
+    input: delly/ABOFRAM007402247175.vcf
+    output: delly/pass_ABOFRAM007402247175.vcf.gz
+    log: logs/delly/delly_filter_ABOFRAM007402247175.log
+    jobid: 3085
+    reason: Missing output files: delly/pass_ABOFRAM007402247175.vcf.gz; Input files updated by another job: delly/ABOFRAM007402247175.vcf
+    wildcards: sample=ABOFRAM007402247175
+    resources: mem_mb=11444, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=12GB, time=28800
+
+
+        bcftools filter -i 'FILTER=="PASS" && SVTYPE="DEL"' delly/ABOFRAM007402247175.vcf -O z -o delly/pass_ABOFRAM007402247175.vcf.gz ;
+        tabix -p vcf delly/pass_ABOFRAM007402247175.vcf.gz
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3085 has been submitted with SLURM jobid 11383914 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_delly_filter/ABOFRAM007402247175/11383914.log).
+[Tue Sep 24 21:39:24 2024]
+Finished job 3054.
+1263 of 1273 steps (99%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Sep 24 21:39:24 2024]
+rule paragraph_genotypeSV:
+    input: /work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/ABOFRAM007402247175_pbsv.vcf.gz, paragraph/details_ABOFRAM007402247175.txt, /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa
+    output: paragraph/temp_ABOFRAM007402247175/genotypes.vcf.gz
+    log: logs/paragraph/paragraph_genotypeSV_ABOFRAM007402247175.log
+    jobid: 3053
+    reason: Missing output files: paragraph/temp_ABOFRAM007402247175/genotypes.vcf.gz; Input files updated by another job: paragraph/details_ABOFRAM007402247175.txt
+    wildcards: sample=ABOFRAM007402247175
+    threads: 7
+    resources: mem_mb=20027, mem_mib=5089, disk_mb=5336, disk_mib=5089, tmpdir=<TBD>, slurm_partition=workq, slurm_account=mnaji, mem=21GB, time=28800
+
+
+        multigrmpy.py -i /work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/ABOFRAM007402247175_pbsv.vcf.gz -m paragraph/details_ABOFRAM007402247175.txt -r /work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa -o paragraph/temp_ABOFRAM007402247175 --threads 7 ;
+        ls -sh paragraph/temp_ABOFRAM007402247175/genotypes.vcf.gz
+        
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+Job 3053 has been submitted with SLURM jobid 11383915 (log: /work/project/CASCAD/mnaji/sm_folder/results/.snakemake/slurm_logs/rule_paragraph_genotypeSV/ABOFRAM007402247175/11383915.log).
+[Tue Sep 24 21:40:25 2024]
+Finished job 3085.
+1264 of 1273 steps (99%) done
+Removing temporary output delly/ABOFRAM007402247175.vcf.
