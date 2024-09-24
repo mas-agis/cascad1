@@ -33,7 +33,7 @@ rule graphtyper_list_files:
         #list each chunk SV genotype vcf in aut+X in the folder
         echo {{1..29}} X | tr ' ' '\n' | while read chrom; do if [[ ! -d graphtyper/temp_{wildcards.sample}/${{chrom}} ]]; then continue; fi; find graphtyper/temp_{wildcards.sample}/${{chrom}} -name "*.vcf.gz" | sort; done > {output} 
         #remove the temp folder
-        rm -r graphtyper/temp_{wildcards.sample}
+        #rm -r graphtyper/temp_{wildcards.sample}
         """
 
 rule graphtyper_concat:

@@ -33,7 +33,7 @@ rule manta_comp:
         stderr="logs/manta/manta_comp_{sample}.log"
     shell:
         r"""
-        python2.7 {input} && ls -sh {output}
+        python2.7 {input} -j 8 && ls -sh {output}
         """
 
 rule manta_filter:

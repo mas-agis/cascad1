@@ -14,6 +14,7 @@ set-threads:
     giraffe_mapping: 32
     giraffe_chunk: 1
     giraffe_pack: 3
+    manta_comp: 8
     paragraph_genotypeSV: 7
 set-resources:
     bwamap:
@@ -30,5 +31,7 @@ set-resources:
       mem: 30GB
     giraffe_pack:
       mem: 15GB
+    manta_comp:
+      mem: 30GB
     paragraph_genotypeSV:
       mem: 21GB

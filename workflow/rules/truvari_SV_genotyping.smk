@@ -12,7 +12,7 @@ rule split_truth_set:
     params:
         tempdir=config['tmpdir'],
     log:
-        stderr="logs/truvari/truth_set/{sample}.log"
+        stderr="logs/truvari/split_truth_set/{sample}.log"
     shell:
         r"""
         #DEL
@@ -58,7 +58,7 @@ rule split_graphtyper:
     params:
         tempdir=config['tmpdir'],
     log:
-        stderr="logs/truvari/get_vg_pos/{sample}.log"
+        stderr="logs/truvari/split_graphtyper/{sample}.log"
     shell:
         r"""
         #DEL
@@ -68,18 +68,78 @@ rule split_graphtyper:
         """
 
 rule split_paragraph:
+    input:
+        "paragraph/para_{sample}.vcf.gz"
+    output:
+        temp("truvari/DEL_para_{sample}.vcf.gz"),
+        temp("truvari/INS_para_{sample}.vcf.gz")
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/split_paragraph/{sample}.log"
+    shell:
+        r"""    
+        #DEL
+        bcftools filter -i 'SVTYPE="DEL"' {input} | bgzip -c > {output[0]} && tabix -p vcf {output[0]}
+        #INS
+        bcftools filter -i 'SVTYPE="INS"' {input} | bgzip -c > {output[1]} && tabix -p vcf {output[1]}
+        """
 
+rule split_manta:
+    input:
+        "manta/{sample}.vcf.gz"
+    output:
+        temp("truvari/DEL_manta_{sample}.vcf.gz"),
+        temp("truvari/INS_manta_{sample}.vcf.gz")
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/split_manta/{sample}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools filter -i 'SVTYPE="DEL"' {input} | bgzip -c > {output[0]} && tabix -p vcf {output[0]}
+        #INS
+        bcftools filter -i 'SVTYPE="INS"' {input} | bgzip -c > {output[1]} && tabix -p vcf {output[1]}
+        """
+
+rule split_svtyper:
+    input:
+        "svtyper/noMis_{sample}_svtper.vcf.gz"
+    output:
+        temp("truvari/DEL_svtyper_{sample}.vcf.gz")
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/split_svtyper/{sample}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools filter -i 'SVTYPE="DEL"' {input} | bgzip -c > {output[0]} && tabix -p vcf {output[0]}
+        """
 
 rule truvari_bench:
     input:
-        "truvari/truth_set/DEL_{sample}.vcf.gz",
-        "truvari/truth_set/INS_{sample}.vcf.gz",
+        "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
+        "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
         "truvari/DEL_{sample}.vcf.gz",            #vg_DEL
-        "svtyper/noMis_{sample}_svtper.vcf.gz",   #svtyper
         "truvari/DEL_graphtyper_{sample}.vcf.gz", #graphtyper_DEL
+        "truvari/DEL_para_{sample}.vcf.gz",       #paragraph_DEL
+        "truvari/DEL_manta_{sample}.vcf.gz",      #manta_DEL
+        "truvari/DEL_svtyper_{sample}.vcf.gz",    #svtyper
+        "delly/pass_{sample}.vcf.gz",             #delly_DEL
+        "lumpy/lumpy_{sample}.vcf.gz",            #lumpy_DEL
         "truvari/INS_{sample}.vcf.gz",            #vg_INS
-        "truvari/INS_graphtyper_{sample}.vcf.gz",  #graphtyper_INS
-        
+        "truvari/INS_graphtyper_{sample}.vcf.gz", #graphtyper_INS
+        "truvari/INS_para_{sample}.vcf.gz",       #paragraph_INS
+        "truvari/INS_manta_{sample}.vcf.gz"       #manta_INS        
+
      output:
         "truvari/Bench_DEL_vg_{sample}.json",
         "truvari/Bench_INS_vg_{sample}.json"
@@ -105,8 +165,8 @@ rule truvari_bench:
 #DEL-INS        expand("vg_call/wg_{sample}.vcf.gz.tbi", sample=samples.index),            #call vcf of SV genotypung on entire genome - vg_DEL.smk
 #DEL     keep SVTYPE=DEL   expand("svtyper/noMis_{sample}_svtper.vcf.gz",  sample=samples.index),       #call svtyper - remove missing genotype
 #DEL-INS SVTYPE=INS/DEL       expand("graphtyper/graphtyper_{sample}.vcf.gz", sample=samples.index),       #call graphtyper - not consistent result with previously on Trio2_offspring10x
-DEL-INS SVTYPE=DEL/INS       expand("paragraph/para_{sample}.vcf.gz", sample=samples.index),              #call paragraph - re-run again
-DEL     already DEL only     expand("delly/pass_{sample}.vcf.gz", sample=samples.index),                  #call delly
-DEL-INS  SVTYPE=DEL/INS      expand("manta/{sample}.vcf.gz", sample=samples.index),                       #call manta
-DEL     already DEL only     expand("lumpy/lumpy_{sample}.vcf.gz", sample=samples.index)]                 #call lumpy
+#DEL-INS SVTYPE=DEL/INS       expand("paragraph/para_{sample}.vcf.gz", sample=samples.index),              #call paragraph - re-run again
+#DEL     already DEL only     expand("delly/pass_{sample}.vcf.gz", sample=samples.index),                  #call delly
+#DEL-INS  SVTYPE=DEL/INS      expand("manta/{sample}.vcf.gz", sample=samples.index),                       #call manta
+#DEL     already DEL only     expand("lumpy/lumpy_{sample}.vcf.gz", sample=samples.index)]                 #call lumpy
 
