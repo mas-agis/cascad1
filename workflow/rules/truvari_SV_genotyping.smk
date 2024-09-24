@@ -139,10 +139,18 @@ rule truvari_bench:
         "truvari/INS_graphtyper_{sample}.vcf.gz", #graphtyper_INS
         "truvari/INS_para_{sample}.vcf.gz",       #paragraph_INS
         "truvari/INS_manta_{sample}.vcf.gz"       #manta_INS        
-
-     output:
-        "truvari/Bench_DEL_vg_{sample}.json",
-        "truvari/Bench_INS_vg_{sample}.json"
+    output:
+        directory("truvari/{sample}/DEL_vg"),
+        directory("truvari/{sample}/DEL_graphtyper"),
+        directory("truvari/{sample}/DEL_paragraph"),
+        directory("truvari/{sample}/DEL_manta"),
+        directory("truvari/{sample}/DEL_svtyper"),
+        directory("truvari/{sample}/DEL_delly"),
+        directory("truvari/{sample}/DEL_lumpy"),
+        directory("truvari/{sample}/INS_vg"),
+        directory("truvari/{sample}/INS_graphtyper"),
+        directory("truvari/{sample}/INS_paragraph"),
+        directory("truvari/{sample}/INS_manta")
     conda:
         "../envs/truvari.yml"
     params:
@@ -152,14 +160,49 @@ rule truvari_bench:
     shell:
         r"""
 	##DEL
-        #vg
-        truvari bench -b {input[0]} -c {input[]} -o temp_truvari_{wildcards.sample} -p 0 && mv temp_truvari_{wildcards.sample}/summary.json {output[]} && rm -r temp_truvari_{wildcards.sample}
+        truvari bench -b {input[0]} -c {input[2]} -o {output[0]} -p 0 ;
+        truvari bench -b {input[0]} -c {input[3]} -o {output[1]} -p 0 ;
+        truvari bench -b {input[0]} -c {input[4]} -o {output[2]} -p 0 ;
+        truvari bench -b {input[0]} -c {input[5]} -o {output[3]} -p 0 ;
+        truvari bench -b {input[0]} -c {input[6]} -o {output[4]} -p 0 ;
+        truvari bench -b {input[0]} -c {input[7]} -o {output[5]} -p 0 ;
+        truvari bench -b {input[0]} -c {input[8]} -o {output[6]} -p 0 ;
         ##INS
-        truvari bench -b {input[0]} -c {input[]} -o temp_truvari_{wildcards.sample} -p 0 && mv temp_truvari_{wildcards.sample}/summary.json {output[]} && rm -r temp_truvari_{wildcards.sample}
+        truvari bench -b {input[1]} -c {input[9]} -o {output[7]} -p 0 ;
+        truvari bench -b {input[1]} -c {input[10]} -o {output[8]} -p 0 ;
+        truvari bench -b {input[1]} -c {input[11]} -o {output[9]} -p 0 ;
+        truvari bench -b {input[1]} -c {input[12]} -o {output[10]} -p 0 ;
+        """
 
-  "graphtyper/graphtyper_{sample}.vcf.gz",
-        "paragraph/para_{sample}.vcf.gz",
-        "manta/{sample}.vcf.gz"
+rule truvari_summarise:
+    input:
+        "truvari/{sample}/DEL_vg",
+        "truvari/{sample}/DEL_graphtyper",
+        "truvari/{sample}/DEL_paragraph",
+        "truvari/{sample}/DEL_manta",
+        "truvari/{sample}/DEL_svtyper",
+        "truvari/{sample}/DEL_delly",
+        "truvari/{sample}/DEL_lumpy",
+        "truvari/{sample}/INS_vg",
+        "truvari/{sample}/INS_graphtyper",
+        "truvari/{sample}/INS_paragraph",
+        "truvari/{sample}/INS_manta"
+    output:
+        "truvari/{sample}/summary.txt"
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/summarise/{sample}.log"
+    script: 
+        "scripts/truvari_summarise.r"
+            
+rule plot_truvari:
+    input:
+        expand("truvari/{sample}/summary.txt", sample=samples.index)
+
+
 
 ##list of output from SV genotyping - and the strategy
 #DEL-INS        expand("vg_call/wg_{sample}.vcf.gz.tbi", sample=samples.index),            #call vcf of SV genotypung on entire genome - vg_DEL.smk
