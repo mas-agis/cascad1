@@ -1,5 +1,7 @@
 
 import re
+samples = pd.read_table(config["samples"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
 
 rule split_truth_set:
     input:
@@ -38,12 +40,12 @@ rule split_vg_comp:
     shell:
         r"""
         #DEL
-        bcftools view "vg_call/wg_{sample}.vcf.gz" | grep -v '^#' | awk 'BEGIN{FS=OFS="\t"}(length($5)==1){print $1,$2}' > truvari/DEL_{wildcards.sample}.pos
-        bcftools view -R truvari/DEL_{wildcards.sample}.pos {input} -O z -o {output[0]} && tabix -p {output[0]} 
+        bcftools view "vg_call/wg_{wildcards.sample}.vcf.gz" | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari/DEL_{wildcards.sample}.pos
+        bcftools view -R truvari/DEL_{wildcards.sample}.pos {input} -O z -o {output[0]} && tabix -p vcf {output[0]} 
         rm -r truvari/DEL_{wildcards.sample}.pos
         #INS
-        bcftools view "vg_call/wg_{sample}.vcf.gz" | grep -v '^#' | awk 'BEGIN{FS=OFS="\t"}(length($4)==1){print $1,$2}' > truvari/INS_{wildcards.sample}.pos
-        bcftools view -R truvari/INS_{wildcards.sample}.pos {input} -O z -o {output[1]} && tabix -p {output[1]} 
+        bcftools view "vg_call/wg_{wildcards.sample}.vcf.gz" | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($4)==1){{print $1,$2}}' > truvari/INS_{wildcards.sample}.pos
+        bcftools view -R truvari/INS_{wildcards.sample}.pos {input} -O z -o {output[1]} && tabix -p vcf {output[1]} 
         rm -r truvari/INS_{wildcards.sample}.pos
         """
 
@@ -203,7 +205,7 @@ rule truvari_plot:
         summaries=expand("truvari/{sample}/summary.txt", sample=samples.index),
         bam_depth=expand("../workflow/report/depth/{sample}.txt", sample=samples.index)
     output:
-        "truvari/SV_genotyping.svg"
+        "truvari/SV_genotyping.txt"
     conda:
         "../envs/truvari.yml"
     params:

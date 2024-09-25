@@ -28,6 +28,6 @@ don = inner_join(df, df1, by="SAMPLE")
 
 #GGPLOT
 
-write.table(don, "truvari/SV_genotyping.svg", quote=F, sep="\t", col.names=T, row.names=F)
+write.table(don, "truvari/SV_genotyping.txt", quote=F, sep="\t", col.names=T, row.names=F)
 
 q(save="no")
