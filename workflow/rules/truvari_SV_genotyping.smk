@@ -198,9 +198,21 @@ rule truvari_summarise:
     script: 
         "scripts/truvari_summarise.r"
             
-rule plot_truvari:
+rule truvari_plot:
     input:
-        expand("truvari/{sample}/summary.txt", sample=samples.index)
+        summaries=expand("truvari/{sample}/summary.txt", sample=samples.index),
+        bam_depth=expand("../workflow/report/depth/{sample}.txt", sample=samples.index)
+    output:
+        "truvari/SV_genotyping.svg"
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/plot.log"
+    script:
+        "scripts/truvari_plot.r"
+
 
 
 
