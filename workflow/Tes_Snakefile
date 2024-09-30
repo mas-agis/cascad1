@@ -26,7 +26,8 @@ CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
 # Target rules - step by step
 rule all:
     input:
-        [expand("truvari/calc_DEL_{tool}_{sample}", sample=samples.index, tool=["vg", "graphtyper"])]
+        [expand("truvari/calc_DEL_{tool}_{sample}", sample=samples.index, tool=["vg", "graphtyper", "paragraph", "manta", "svtyper", "delly", "lumpy"]), 
+        expand("truvari/calc_INS_{tool}_{sample}", sample=samples.index, tool=["vg", "graphtyper", "paragraph", "manta"])]
 #        [expand("truvari/{sample}/summary.txt", sample=samples.index)]
 #       [expand("bam_files/recal_{sample}.bam", sample=samples.index),        #mapping the short-reads - mapping.smk
 #        [expand("../workflow/report/bam_stats/{sample}.txt", sample=samples.index), #bamstats for each sample

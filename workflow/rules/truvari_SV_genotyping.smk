@@ -73,8 +73,8 @@ rule split_paragraph:
     input:
         "paragraph/para_{sample}.vcf.gz"
     output:
-        temp("truvari/DEL_para_{sample}.vcf.gz"),
-        temp("truvari/INS_para_{sample}.vcf.gz")
+        temp("truvari/DEL_paragraph_{sample}.vcf.gz"),
+        temp("truvari/INS_paragraph_{sample}.vcf.gz")
     conda:
         "../envs/truvari.yml"
     params:
@@ -126,10 +126,44 @@ rule split_svtyper:
         bcftools filter -i 'SVTYPE="DEL"' {input} | bgzip -c > {output[0]} && tabix -p vcf {output[0]}
         """
 
+rule truvari_filter_delly:
+    input:
+        config['ref']['bed'],
+        "delly/pass_{sample}.vcf.gz"
+    output:
+        temp("truvari/DEL_delly_{sample}.vcf.gz")
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/filter_delly/DEL_{sample}.log"
+    shell:
+        r"""
+        bcftools filter -R {input[0]} {input[1]} | bgzip -c > {output};
+        tabix -p vcf {output};
+        """
+
+rule truvari_bypass_lumpy:
+    input:
+        "lumpy/lumpy_{sample}.vcf.gz"
+    output:
+        temp("truvari/DEL_lumpy_{sample}.vcf.gz")
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/filter_delly/DEL_{sample}.log"
+    shell:
+        r"""
+        cp {input} {output} ;
+        tabix -p vcf {output}
+        """
+
 rule truvari_bench_DEL:
     input:
         "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
-        "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
         "truvari/DEL_{tool}_{sample}.vcf.gz"            #comp_DEL
     output:
         directory("truvari/calc_DEL_{tool}_{sample}")
@@ -138,14 +172,32 @@ rule truvari_bench_DEL:
     params:
         tempdir=config['tmpdir'],
     log:
-        stderr="logs/truvari/bench/{sample}_{tool}.log"
+        stderr="logs/truvari/bench/DEL_{sample}_{tool}.log"
     shell:
         r"""
         ##DEL
-        truvari bench -b {input[0]} -c {input[2]} -o {output} -p 0 ;
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
         """
 
+rule truvari_bench_INS:
+    input:
+        "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
+        "truvari/INS_{tool}_{sample}.vcf.gz"            #comp_INS
+    output:
+        directory("truvari/calc_INS_{tool}_{sample}")
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/bench/INS_{sample}_{tool}.log"
+    shell:
+        r"""
+        ##INS
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
 
+    
 #rule truvari_bench:
 #    input:
 #        "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
