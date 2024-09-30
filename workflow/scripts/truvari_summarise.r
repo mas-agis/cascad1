@@ -5,6 +5,8 @@ library(dplyr)
 library(jsonlite)
 library(stringr)
 
+
+##Truvari output section
 SAMPLE = c()
 SVTYPE = c()
 CALLER = c()
@@ -17,7 +19,6 @@ PRECISION = c()
 RECALL = c()
 F1 = c()
 GT_concord = c()
-
 
 for (folder in snakemake@input){
     file = paste0(folder, "/summary.json")
@@ -38,6 +39,20 @@ for (folder in snakemake@input){
 
 df = data.frame(SAMPLE=SAMPLE, SVTYPE=SVTYPE, CALLER=CALLER, BASE_count=BASE_count, COMP_count=COMP_count, TP_comp=TP_comp, FP=FP, FN=FN, PRECISION=PRECISION, RECALL=RECALL, F1=F1, GT_concord=GT_concord)
 
-write.table(df, paste0('truvari/', SAMPLE, '/summary.txt'), quote=F, sep="\t", col.names=T, row.names=F)
+##Average read depth section 
+DEPTH = c()
+SAMPLE1 = unique(SAMPLE)
+for (sample in SAMPLE1){
+	file = paste0("../workflow/report/depth/", sample, ".txt")
+	depth = fread(file, header=F) %>% unlist()
+        DEPTH = c(DEPTH, depth)
+}
+
+df1 <- data.frame(SAMPLE=SAMPLE1, DEPTH=DEPTH)
+
+#INNER JOIN
+don = inner_join(df, df1, by="SAMPLE")
+
+write.table(don, snakemake@output, quote=F, sep="\t", col.names=T, row.names=F)
 
 q(save="no")

@@ -1,6 +1,10 @@
 
 import re
 
+samples = pd.read_table(config["samples"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+
+
 rule split_truth_set:
     input:
         get_panel1
@@ -201,16 +205,16 @@ rule truvari_bench_INS:
 
 rule truvari_summarise:
     input:
-        "truvari/calc_DEL_{tool}_{sample}", 
-        "truvari/calc_INS_{tool}_{sample}"
+        expand("truvari/calc_DEL_{tool}_{sample}", sample=samples.index, tool=["vg", "graphtyper", "paragraph", "manta", "svtyper", "delly", "lumpy"]), 
+        expand("truvari/calc_INS_{tool}_{sample}",  sample=samples.index, tool=["vg", "graphtyper", "paragraph", "manta"])
     output:
-        "truvari/summary_{sample}.txt"
+        "truvari/summary_SV_genotyping.txt"
     conda:
         "../envs/truvari.yml"
     params:
         tempdir=config['tmpdir'],
     log:
-        stderr="logs/truvari/summarise/{sample}.log"
+        stderr="logs/truvari/summarise.log"
     script: 
         "scripts/truvari_summarise.r"
             
