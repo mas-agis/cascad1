@@ -13,8 +13,8 @@ include: "rules/manta.smk"
 include: "rules/lumpy.smk"
 include: "rules/truvari_SV_genotyping.smk"
 
-#samples = pd.read_table(config["samples"],
-#                        dtype={"sample": str}).set_index("sample", drop=False)
+samples = pd.read_table(config["samples"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
 
 
 workdir: config['workdir']
@@ -23,11 +23,10 @@ CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
 
 # Target rules - concise
  
-
 # Target rules - step by step
 rule all:
     input:
-        ["truvari/SV_genotyping.txt"]
+        [expand("truvari/calc_DEL_{tool}_{sample}", sample=samples.index, tool=["vg", "graphtyper"])]
 #        [expand("truvari/{sample}/summary.txt", sample=samples.index)]
 #       [expand("bam_files/recal_{sample}.bam", sample=samples.index),        #mapping the short-reads - mapping.smk
 #        [expand("../workflow/report/bam_stats/{sample}.txt", sample=samples.index), #bamstats for each sample

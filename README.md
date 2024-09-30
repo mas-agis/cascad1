@@ -10,7 +10,7 @@ pip install snakemake-executor-plugin-slurm
 ```
 Once created use simply
 ```
-mamba activate templatesnake
+conda activate templatesnake
 ```
 
 

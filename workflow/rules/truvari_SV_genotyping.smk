@@ -1,14 +1,12 @@
 
 import re
-samples = pd.read_table(config["samples"],
-                        dtype={"sample": str}).set_index("sample", drop=False)
 
 rule split_truth_set:
     input:
         get_panel1
     output:
         "truvari/truth_set/DEL_{sample}.vcf.gz",
-        "truvari/truth_set/INS_{sample}.vcf.gz" 
+        "truvari/truth_set/INS_{sample}.vcf.gz"
     conda:
         "../envs/truvari.yml"
     params:
@@ -29,8 +27,8 @@ rule split_vg_comp:
     input: 
         "vg_call/wg_{sample}.vcf.gz" 
     output:
-        temp("truvari/DEL_{sample}.vcf.gz"),
-        temp("truvari/INS_{sample}.vcf.gz")
+        temp("truvari/DEL_vg_{sample}.vcf.gz"),
+        temp("truvari/INS_vg_{sample}.vcf.gz")
     conda:
         "../envs/truvari.yml"
     params:
@@ -40,13 +38,15 @@ rule split_vg_comp:
     shell:
         r"""
         #DEL
-        bcftools view "vg_call/wg_{wildcards.sample}.vcf.gz" | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari/DEL_{wildcards.sample}.pos
-        bcftools view -R truvari/DEL_{wildcards.sample}.pos {input} -O z -o {output[0]} && tabix -p vcf {output[0]} 
-        rm -r truvari/DEL_{wildcards.sample}.pos
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari/DEL_{wildcards.sample}.pos
+        bcftools view -R truvari/DEL_{wildcards.sample}.pos {input} -O z -o {output[0]} 
+        tabix -p vcf {output[0]} 
+        #rm -r truvari/DEL_{wildcards.sample}.pos
         #INS
-        bcftools view "vg_call/wg_{wildcards.sample}.vcf.gz" | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($4)==1){{print $1,$2}}' > truvari/INS_{wildcards.sample}.pos
-        bcftools view -R truvari/INS_{wildcards.sample}.pos {input} -O z -o {output[1]} && tabix -p vcf {output[1]} 
-        rm -r truvari/INS_{wildcards.sample}.pos
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($4)==1){{print $1,$2}}' > truvari/INS_{wildcards.sample}.pos
+        bcftools view -R truvari/INS_{wildcards.sample}.pos {input} -O z -o {output[1]} 
+        tabix -p vcf {output[1]} 
+        #rm -r truvari/INS_{wildcards.sample}.pos
         """
 
 rule split_graphtyper:
@@ -126,69 +126,89 @@ rule split_svtyper:
         bcftools filter -i 'SVTYPE="DEL"' {input} | bgzip -c > {output[0]} && tabix -p vcf {output[0]}
         """
 
-rule truvari_bench:
+rule truvari_bench_DEL:
     input:
         "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
         "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
-        "truvari/DEL_{sample}.vcf.gz",            #vg_DEL
-        "truvari/DEL_graphtyper_{sample}.vcf.gz", #graphtyper_DEL
-        "truvari/DEL_para_{sample}.vcf.gz",       #paragraph_DEL
-        "truvari/DEL_manta_{sample}.vcf.gz",      #manta_DEL
-        "truvari/DEL_svtyper_{sample}.vcf.gz",    #svtyper
-        "delly/pass_{sample}.vcf.gz",             #delly_DEL
-        "lumpy/lumpy_{sample}.vcf.gz",            #lumpy_DEL
-        "truvari/INS_{sample}.vcf.gz",            #vg_INS
-        "truvari/INS_graphtyper_{sample}.vcf.gz", #graphtyper_INS
-        "truvari/INS_para_{sample}.vcf.gz",       #paragraph_INS
-        "truvari/INS_manta_{sample}.vcf.gz"       #manta_INS        
+        "truvari/DEL_{tool}_{sample}.vcf.gz"            #comp_DEL
     output:
-        directory("truvari/{sample}/DEL_vg"),
-        directory("truvari/{sample}/DEL_graphtyper"),
-        directory("truvari/{sample}/DEL_paragraph"),
-        directory("truvari/{sample}/DEL_manta"),
-        directory("truvari/{sample}/DEL_svtyper"),
-        directory("truvari/{sample}/DEL_delly"),
-        directory("truvari/{sample}/DEL_lumpy"),
-        directory("truvari/{sample}/INS_vg"),
-        directory("truvari/{sample}/INS_graphtyper"),
-        directory("truvari/{sample}/INS_paragraph"),
-        directory("truvari/{sample}/INS_manta")
+        directory("truvari/calc_DEL_{tool}_{sample}")
     conda:
         "../envs/truvari.yml"
     params:
         tempdir=config['tmpdir'],
     log:
-        stderr="logs/truvari/bench/{sample}.log"
+        stderr="logs/truvari/bench/{sample}_{tool}.log"
     shell:
         r"""
-	##DEL
-        truvari bench -b {input[0]} -c {input[2]} -o {output[0]} -p 0 ;
-        truvari bench -b {input[0]} -c {input[3]} -o {output[1]} -p 0 ;
-        truvari bench -b {input[0]} -c {input[4]} -o {output[2]} -p 0 ;
-        truvari bench -b {input[0]} -c {input[5]} -o {output[3]} -p 0 ;
-        truvari bench -b {input[0]} -c {input[6]} -o {output[4]} -p 0 ;
-        truvari bench -b {input[0]} -c {input[7]} -o {output[5]} -p 0 ;
-        truvari bench -b {input[0]} -c {input[8]} -o {output[6]} -p 0 ;
-        ##INS
-        truvari bench -b {input[1]} -c {input[9]} -o {output[7]} -p 0 ;
-        truvari bench -b {input[1]} -c {input[10]} -o {output[8]} -p 0 ;
-        truvari bench -b {input[1]} -c {input[11]} -o {output[9]} -p 0 ;
-        truvari bench -b {input[1]} -c {input[12]} -o {output[10]} -p 0 ;
+        ##DEL
+        truvari bench -b {input[0]} -c {input[2]} -o {output} -p 0 ;
         """
+
+
+#rule truvari_bench:
+#    input:
+#        "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
+#        "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
+#        "truvari/DEL_{sample}.vcf.gz",            #vg_DEL
+#        "truvari/DEL_graphtyper_{sample}.vcf.gz", #graphtyper_DEL
+#        "truvari/DEL_para_{sample}.vcf.gz",       #paragraph_DEL
+#        "truvari/DEL_manta_{sample}.vcf.gz",      #manta_DEL
+#        "truvari/DEL_svtyper_{sample}.vcf.gz",    #svtyper
+#        "delly/pass_{sample}.vcf.gz",             #delly_DEL
+#        "lumpy/lumpy_{sample}.vcf.gz",            #lumpy_DEL
+#        "truvari/INS_{sample}.vcf.gz",            #vg_INS
+#        "truvari/INS_graphtyper_{sample}.vcf.gz", #graphtyper_INS
+#        "truvari/INS_para_{sample}.vcf.gz",       #paragraph_INS
+#        "truvari/INS_manta_{sample}.vcf.gz"       #manta_INS        
+#    output:
+#        directory("truvari/{sample}/DEL_vg"),
+#        directory("truvari/{sample}/DEL_graphtyper"),
+#        directory("truvari/{sample}/DEL_paragraph"),
+#        directory("truvari/{sample}/DEL_manta"),
+#        directory("truvari/{sample}/DEL_svtyper"),
+#        directory("truvari/{sample}/DEL_delly"),
+#        directory("truvari/{sample}/DEL_lumpy"),
+#        directory("truvari/{sample}/INS_vg"),
+#        directory("truvari/{sample}/INS_graphtyper"),
+#        directory("truvari/{sample}/INS_paragraph"),
+#        directory("truvari/{sample}/INS_manta")
+#    conda:
+#        "../envs/truvari.yml"
+#    params:
+#        tempdir=config['tmpdir'],
+#    log:
+#        stderr="logs/truvari/bench/{sample}.log"
+#    shell:
+#        r"""
+#	##DEL
+#        truvari bench -b {input[0]} -c {input[2]} -o {output[0]} -p 0 ;
+#        truvari bench -b {input[0]} -c {input[3]} -o {output[1]} -p 0 ;
+#        truvari bench -b {input[0]} -c {input[4]} -o {output[2]} -p 0 ;
+#        truvari bench -b {input[0]} -c {input[5]} -o {output[3]} -p 0 ;
+#        truvari bench -b {input[0]} -c {input[6]} -o {output[4]} -p 0 ;
+#        truvari bench -b {input[0]} -c {input[7]} -o {output[5]} -p 0 ;
+#        truvari bench -b {input[0]} -c {input[8]} -o {output[6]} -p 0 ;
+#        ##INS
+#        truvari bench -b {input[1]} -c {input[9]} -o {output[7]} -p 0 ;
+#        truvari bench -b {input[1]} -c {input[10]} -o {output[8]} -p 0 ;
+#        truvari bench -b {input[1]} -c {input[11]} -o {output[9]} -p 0 ;
+#        truvari bench -b {input[1]} -c {input[12]} -o {output[10]} -p 0 ;
+#        """
 
 rule truvari_summarise:
     input:
         "truvari/{sample}/DEL_vg",
         "truvari/{sample}/DEL_graphtyper",
-        "truvari/{sample}/DEL_paragraph",
-        "truvari/{sample}/DEL_manta",
-        "truvari/{sample}/DEL_svtyper",
-        "truvari/{sample}/DEL_delly",
-        "truvari/{sample}/DEL_lumpy",
-        "truvari/{sample}/INS_vg",
-        "truvari/{sample}/INS_graphtyper",
-        "truvari/{sample}/INS_paragraph",
-        "truvari/{sample}/INS_manta"
+#        "truvari/{sample}/DEL_paragraph",
+#        "truvari/{sample}/DEL_manta",
+#        "truvari/{sample}/DEL_svtyper",
+#        "truvari/{sample}/DEL_delly",
+#        "truvari/{sample}/DEL_lumpy",
+#        "truvari/{sample}/INS_vg",
+#        "truvari/{sample}/INS_graphtyper",
+#        "truvari/{sample}/INS_paragraph",
+#        "truvari/{sample}/INS_manta"
     output:
         "truvari/{sample}/summary.txt"
     conda:
@@ -200,20 +220,20 @@ rule truvari_summarise:
     script: 
         "scripts/truvari_summarise.r"
             
-rule truvari_plot:
-    input:
-        summaries=expand("truvari/{sample}/summary.txt", sample=samples.index),
-        bam_depth=expand("../workflow/report/depth/{sample}.txt", sample=samples.index)
-    output:
-        "truvari/SV_genotyping.txt"
-    conda:
-        "../envs/truvari.yml"
-    params:
-        tempdir=config['tmpdir'],
-    log:
-        stderr="logs/truvari/plot.log"
-    script:
-        "scripts/truvari_plot.r"
+#rule truvari_plot:
+#    input:
+#        summaries=expand("truvari/{sample}/summary.txt", sample=samples.index),
+#        bam_depth=expand("../workflow/report/depth/{sample}.txt", sample=samples.index)
+#    output:
+#        "truvari/SV_genotyping.txt"
+#    conda:
+#        "../envs/truvari.yml"
+#    params:
+#        tempdir=config['tmpdir'],
+#    log:
+#        stderr="logs/truvari/plot.log"
+#    script:
+#        "scripts/truvari_plot.r"
 
 
 
