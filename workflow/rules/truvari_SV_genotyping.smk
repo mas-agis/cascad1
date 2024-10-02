@@ -213,10 +213,13 @@ rule truvari_summarise:
         "../envs/truvari.yml"
     params:
         tempdir=config['tmpdir'],
+        r_script="../workflow/scripts/truvari_summarise.R"
     log:
         stderr="logs/truvari/summarise.log"
-    script: 
-        "scripts/truvari_summarise.r"
+    shell: 
+        r"""
+        {params.r_script} {input}
+        """  
             
 #rule truvari_plot:
 #    input:

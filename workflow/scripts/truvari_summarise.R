@@ -5,6 +5,8 @@ library(dplyr)
 library(jsonlite)
 library(stringr)
 
+#get input arguments
+args = commandArgs(trailingOnly=TRUE)
 
 ##Truvari output section
 SAMPLE = c()
@@ -20,7 +22,8 @@ RECALL = c()
 F1 = c()
 GT_concord = c()
 
-for (folder in snakemake@input){
+#for (folder in snakemake@input){
+for (folder in args){
     file = paste0(folder, "/summary.json")
     summary = fromJSON(file, flatten=TRUE)
     SAMPLE = c(SAMPLE, str_split_1(folder, '_')[4])
@@ -53,6 +56,8 @@ df1 <- data.frame(SAMPLE=SAMPLE1, DEPTH=DEPTH)
 #INNER JOIN
 don = inner_join(df, df1, by="SAMPLE")
 
-write.table(don, snakemake@output, quote=F, sep="\t", col.names=T, row.names=F)
+write.table(don, "truvari/summary_SV_genotyping.txt", quote=F, sep="\t", col.names=T, row.names=F)
+
+save.image(file = "snake_Rdebug.RData")
 
 q(save="no")
