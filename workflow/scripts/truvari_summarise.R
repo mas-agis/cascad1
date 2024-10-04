@@ -58,6 +58,4 @@ don = inner_join(df, df1, by="SAMPLE")
 
 write.table(don, "truvari/summary_SV_genotyping.txt", quote=F, sep="\t", col.names=T, row.names=F)
 
-save.image(file = "snake_Rdebug.RData")
-
 q(save="no")
