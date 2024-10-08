@@ -1,6 +1,4 @@
-samples: /work/project/CASCAD/mnaji/sm_folder/workflow/old_samples.tsv              #samples for sv genotyping
 samples_lr: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_lr.tsv        #samples long-reads called with cutesv, pbsv, sniffles
-samples_2reads: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_2reads.tsv 
 
 ref:
   name: BT

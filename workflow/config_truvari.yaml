@@ -1,4 +1,4 @@
-samples: /work/project/CASCAD/mnaji/sm_folder/workflow/samples.tsv              #samples for sv genotyping
+samples: /work/project/CASCAD/mnaji/sm_folder/workflow/samples.tsv              #samples for truvari
 
 ref:
   name: BT

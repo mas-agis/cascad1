@@ -11,6 +11,7 @@ include: "rules/paragraph.smk"
 include: "rules/delly.smk"
 include: "rules/manta.smk"
 include: "rules/lumpy.smk"
+include: "rules/truvari_SV_genotyping.smk"
 
 samples = pd.read_table(config["samples"],
                         dtype={"sample": str}).set_index("sample", drop=False)
@@ -45,5 +46,6 @@ rule all:
         expand("paragraph/para_{sample}.vcf.gz", sample=samples.index),              #call paragraph - re-run again
         expand("delly/pass_{sample}.vcf.gz", sample=samples.index),                  #call delly
         expand("manta/{sample}.vcf.gz", sample=samples.index),                       #call manta
-        expand("lumpy/lumpy_{sample}.vcf.gz", sample=samples.index)]                 #call lumpy
+        expand("lumpy/lumpy_{sample}.vcf.gz", sample=samples.index),                 #call lumpy
+        "truvari/summary_SV_genotyping.txt"]
 
