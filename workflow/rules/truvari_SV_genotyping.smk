@@ -220,21 +220,126 @@ rule truvari_summarise:
         r"""
         {params.r_script} {input}
         """  
-            
-#rule truvari_plot:
-#    input:
-#        summaries=expand("truvari/{sample}/summary.txt", sample=samples.index),
-#        bam_depth=expand("../workflow/report/depth/{sample}.txt", sample=samples.index)
-#    output:
-#        "truvari/SV_genotyping.txt"
-#    conda:
-#        "../envs/truvari.yml"
-#    params:
-#        tempdir=config['tmpdir'],
-#    log:
-#        stderr="logs/truvari/plot.log"
-#    script:
-#        "scripts/truvari_plot.r"
+           
+#######################################################################
+##PART of comparison between vg and paragraph SV genotype outputs
+ 
+rule compare_vg_para_DEL:
+    input: 
+        "truvari/calc_DEL_vg_{sample}/tp-comp.vcf.gz",
+        "truvari/calc_DEL_paragraph_{sample}/tp-comp.vcf.gz",
+        "truvari/truth_set/DEL_{sample}.vcf.gz"
+    output: 
+        directory("truvari/compare_DEL_vg_para_{sample}")
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/compare_vg_para/DEL_{sample}.log"
+    shell:
+        r"""
+        ##DEL
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule compare_vg_para_DEL_inner:
+    input:
+        "truvari/compare_DEL_vg_para_{sample}",
+        "truvari/truth_set/DEL_{sample}.vcf.gz"
+    output:
+        directory("truvari/exclusive_DEL_para_{sample}"),
+        directory("truvari/exclusive_DEL_vg_{sample}"),
+        directory("truvari/common_DEL_para_{sample}"),
+        directory("truvari/common_DEL_vg_{sample}"),
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/compare_vg_para_inner/DEL_{sample}.log"
+    shell:
+        r"""
+        #exlusive para
+        truvari bench -b {input[1]} -c {input[0]}/fp.vcf.gz -o {output[0]} -p 0 ;
+        #exlusive vg
+        truvari bench -b {input[1]} -c {input[0]}/fn.vcf.gz -o {output[1]} -p 0 ;
+        #common para(common SV found also in vg)
+        truvari bench -b {input[1]} -c {input[0]}/tp-comp.vcf.gz -o {output[2]} -p 0 ;
+        #common vg(common SV found also in para)
+        truvari bench -b {input[1]} -c {input[0]}/tp-base.vcf.gz -o {output[3]} -p 0 ;
+        """
+
+rule compare_vg_para_INS:
+    input:
+        "truvari/calc_INS_vg_{sample}/tp-comp.vcf.gz",
+        "truvari/calc_INS_paragraph_{sample}/tp-comp.vcf.gz",
+        "truvari/truth_set/INS_{sample}.vcf.gz"
+    output:
+        directory("truvari/compare_INS_vg_para_{sample}")
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/compare_vg_para/INS_{sample}.log"
+    shell:
+        r"""
+        ##INS
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule compare_vg_para_INS_inner:
+    input:
+        "truvari/compare_INS_vg_para_{sample}",
+        "truvari/truth_set/INS_{sample}.vcf.gz"
+    output:
+        directory("truvari/exclusive_INS_para_{sample}"),
+        directory("truvari/exclusive_INS_vg_{sample}"),
+        directory("truvari/common_INS_para_{sample}"),
+        directory("truvari/common_INS_vg_{sample}"),
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/compare_vg_para_inner/INS_{sample}.log"
+    shell:
+        r"""
+        #exlusive para
+        truvari bench -b {input[1]} -c {input[0]}/fp.vcf.gz -o {output[0]} -p 0 ;
+        #exlusive vg
+        truvari bench -b {input[1]} -c {input[0]}/fn.vcf.gz -o {output[1]} -p 0 ;
+        #common para(common SV found also in vg)
+        truvari bench -b {input[1]} -c {input[0]}/tp-comp.vcf.gz -o {output[2]} -p 0 ;
+        #common vg(common SV found also in para)
+        truvari bench -b {input[1]} -c {input[0]}/tp-base.vcf.gz -o {output[3]} -p 0 ;
+        """
+
+
+rule truvari_summarise_compare_vg_para:
+    input:
+        expand("truvari/exclusive_DEL_para_{sample}", sample=samples.index),
+        expand("truvari/exclusive_DEL_vg_{sample}", sample=samples.index),
+        expand("truvari/common_DEL_para_{sample}", sample=samples.index),
+        expand("truvari/common_DEL_vg_{sample}", sample=samples.index),
+        expand("truvari/exclusive_INS_para_{sample}", sample=samples.index),
+        expand("truvari/exclusive_INS_vg_{sample}", sample=samples.index),
+        expand("truvari/common_INS_para_{sample}", sample=samples.index),
+        expand("truvari/common_INS_vg_{sample}", sample=samples.index)
+    output:
+        "truvari/summary_compare_vg_para_SVgenotyping.txt"
+    conda:
+        "../envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+        r_script="../workflow/scripts/truvari_vg_para_summarise.R"
+    log:
+        stderr="logs/truvari/summarise_compare_vg_para.log"
+    shell:
+        r"""
+        {params.r_script} {input}
+        """
 
 
 

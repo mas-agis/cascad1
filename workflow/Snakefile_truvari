@@ -26,28 +26,10 @@ CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
 # Target rules - step by step
 rule all:
     input:
-        ["truvari/summary_SV_genotyping.txt"]
-#        [expand("truvari/calc_DEL_{tool}_{sample}", sample=samples.index, tool=["vg", "graphtyper", "paragraph", "manta", "svtyper", "delly", "lumpy"]), 
-#        expand("truvari/calc_INS_{tool}_{sample}", sample=samples.index, tool=["vg", "graphtyper", "paragraph", "manta"])]
-#        [expand("truvari/{sample}/summary.txt", sample=samples.index)]
-#       [expand("bam_files/recal_{sample}.bam", sample=samples.index),        #mapping the short-reads - mapping.smk
-#        [expand("../workflow/report/bam_stats/{sample}.txt", sample=samples.index), #bamstats for each sample
-#        expand("../workflow/report/depth/{sample}.txt", sample=samples.index),
-#       expand("vg_vg/{sample}_pt{chr}.vg", sample=samples.index, chr=CHROM), #creating vg for each chr of each individual - vg_DEL.smk
-#       expand("vg_vg/{sample}_sorting_dag.txt", sample=samples.index),       #connect the vg for all chr of each individual - vg_DEL.smk
-#       expand("vg_vg/{sample}_wg.xg", sample=samples.index),                 #indexing the whole genome vg - vg_DEL.smk
-#       expand("vg_vg/{sample}_giraffe_wg.gfa", sample=samples.index),  	     #convert vg to gfa - vg_DEL.smk
-#       expand("vg_vg/{sample}_giraffe_autoindex.txt", sample=samples.index), #giraffe autoindex - vg_DEL.smk
-#       expand("vg_map/{sample}.gam", sample=samples.index),                  #giraffe mapping - vg_DEL.smk
-#       expand("vg_vg/{sample}_pt{chr}.snarls", sample=samples.index, chr=CHROM), #snarls vg - vg_DEL.smk
-#        expand("vg_map/{sample}_{chr}.pack", sample=samples.index, chr=CHROM),    #pack vg including chunk before - vg_DEL.smk -not run 
-#        expand("vg_call/{sample}_{chr}.vcf", sample=samples.index, chr=CHROM),     #call vcf per chr - vg_DEL.smk - not run
-#        expand("vg_call/wg_{sample}.vcf.gz.tbi", sample=samples.index),            #call vcf of SV genotypung on entire genome - vg_DEL.smk 
-#        expand("svtyper/{sample}_svtper.vcf.gz.tbi", sample=samples.index),         #call vcf of SV genotypung - svTyper
-#        expand("svtyper/noMis_{sample}_svtper.vcf.gz",  sample=samples.index),       #call svtyper - remove missing genotype
-#        expand("graphtyper/graphtyper_{sample}.vcf.gz", sample=samples.index),       #call graphtyper - not consistent result with previously on Trio2_offspring10x
-#        expand("paragraph/para_{sample}.vcf.gz", sample=samples.index),              #call paragraph - re-run again
-#        expand("delly/pass_{sample}.vcf.gz", sample=samples.index),                  #call delly
-#        expand("manta/{sample}.vcf.gz", sample=samples.index),                       #call manta
-#        expand("lumpy/lumpy_{sample}.vcf.gz", sample=samples.index)]                 #call lumpy
+        ["truvari/summary_compare_vg_para_SVgenotyping.txt"]
 
+#        directory("truvari/compare_DEL_vg_para_{sample}/exclusive_para"),
+#        directory("truvari/compare_DEL_vg_para_{sample}/exclusive_vg"),
+#        directory("truvari/compare_DEL_vg_para_{sample}/common_para"),
+#        directory("truvari/compare_DEL_vg_para_{sample}/common_vg")
+#
