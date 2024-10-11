@@ -13,8 +13,26 @@ Once created use simply
 conda activate templatesnake
 ```
 
+###Dry-run to check whether pipeline is working and what jobs needed to run for completion of the pipeline
+```
+snakemake -s Snakefile_* --configfile config_*.yaml --use-conda --profile genotoul -p -n
+```
 
-### Running the pipeline
+### Running pipelines on the cluster (4 Snakefiles with corresponding config.yaml) - if run locally omit the '--profile genotoul
+### The main snakemake process is send to backgroud by using 'nohup <COMMAND> &'
+##1.Snakefile_longreads - Preprocessing, apply filter, and retain only DEL&INS for each individual SV vcf called from Cutesv, Pbsv, Sniffles
+
+##2.Snakefile_SV_genotyping
+```
+nohup snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
+```
+##2.Snakefile_truvari
+```
+nohup snakemake -s Snakefile_truvari --configfile config_truvari.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
+```
+
+
+
 
 #### on the cluster
 ##### dry-run

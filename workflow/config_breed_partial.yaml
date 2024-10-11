@@ -1,5 +1,5 @@
-ref_samples: /work/project/CASCAD/mnaji/sm_folder/workflow/samples.tsv              #samples for sv genotyping
-valid_samples: /work/project/CASCAD/mnaji/sm_folder/workflow/samples.tsv
+ref_samples: /work/project/CASCAD/mnaji/sm_folder/workflow/panel_dairy1.tsv              #samples making SV panel
+valid_samples: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy1.tsv            #samples to be aligned to SV panel
 
 ref:
   name: BT

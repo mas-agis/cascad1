@@ -11,6 +11,11 @@ def get_fastq2(wildcards):  #first-pair fastq
     fastq2 = samples.loc[wildcards.sample, "reads"].split(",")[1]
     return fastq2
 def get_panel1(wildcards):
-    """Get panel1 (PBSV) of given sample-unit."""
+    """Get panel1 (PBSV) of given sample-unit - for SV_genotyping"""
     vcf = samples.loc[wildcards.sample, "SV_panel"]
     return vcf
+def get_panel_breed(wildcards):
+    """Get panel (PBSV) of given reference-sample - for breed_partial"""
+    vcf = samples.loc[wildcards.sample, "SV_panel"]
+    return vcf
+    
