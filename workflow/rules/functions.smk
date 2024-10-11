@@ -14,11 +14,3 @@ def get_panel1(wildcards):
     """Get panel1 (PBSV) of given sample-unit."""
     vcf = samples.loc[wildcards.sample, "SV_panel"]
     return vcf
-def get_R1_list(wildcards):
-    """Get forward fastq files of given sample-unit."""
-    fastqs = samples.loc[wildcards.sample, "R1_list"].split(",")
-    return fastqs
-def get_R2_list(wildcards):
-    """Get reverse fastq files of given sample-unit."""
-    fastqs = samples.loc[wildcards.sample, "R2_list"].split(",")
-    return fastqs
