@@ -341,5 +341,3 @@ rule truvari_summarise_compare_vg_para:
         {params.r_script} {input}
         """
 
-
-

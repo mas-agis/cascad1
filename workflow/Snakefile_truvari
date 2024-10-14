@@ -26,10 +26,5 @@ CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
 # Target rules - step by step
 rule all:
     input:
-        ["truvari/summary_compare_vg_para_SVgenotyping.txt"]
-
-#        directory("truvari/compare_DEL_vg_para_{sample}/exclusive_para"),
-#        directory("truvari/compare_DEL_vg_para_{sample}/exclusive_vg"),
-#        directory("truvari/compare_DEL_vg_para_{sample}/common_para"),
-#        directory("truvari/compare_DEL_vg_para_{sample}/common_vg")
-#
+#        ["truvari/summary_compare_vg_para_SVgenotyping.txt"]
+        ["jasmine/panel_list.txt"]

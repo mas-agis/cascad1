@@ -2,16 +2,16 @@
 import re
 import os
 
-samples = pd.read_table(config["ref_samples"],
+samples = pd.read_table(config["samples1"],
                         dtype={"sample": str}).set_index("sample", drop=False)
 
 rule jasmine_unzip:
     input:
-        get_panel_breed
+        get_panel1
     output:
         "jasmine/{sample}_pbsv.vcf"        
     conda:
-        "../envs/mapping_min.yml"
+        "../envs/jasmine.yml"
     params:
         tempdir=config['tmpdir']
     log:
@@ -27,7 +27,7 @@ rule jasmine_list_vcf:
     output:
         "jasmine/panel_list.txt"
     conda:
-        "../envs/mapping_min.yml"
+        "../envs/jasmine.yml"
     params:
         tempdir=config['tmpdir']
     log:

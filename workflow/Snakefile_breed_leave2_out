@@ -4,9 +4,10 @@ import pandas as pd
 # Modules
 include: "rules/functions.smk"
 include: "rules/jasmine_merge.smk"
-
+include: "rules/longreads_filter.smk"
 
 # Target rules - step by step
 rule all:
     input:
-        ["jasmine/panel_SV.vcf"]
+        ["jasmine/panel_list.txt"]
+#        ["jasmine/panel_SV.vcf"]
