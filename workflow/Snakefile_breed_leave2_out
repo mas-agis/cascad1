@@ -12,4 +12,6 @@ PANEL_SV = ["dairy1n2"]
 # Target rules - step by step
 rule all:
     input:
-        [expand("vg_call/wg_{sample}_{panel_vcf}.vcf.gz.tbi", sample=samples.index, panel_vcf=PANEL_SV)]
+#        [expand("vg_vg/{panel}_giraffe_wg.gfa", panel=PANEL_SV)]
+        [expand("vg_call/wg_{sample}_{panel}.vcf.gz.tbi", sample=samples.index, panel=PANEL_SV)]
+
