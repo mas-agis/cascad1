@@ -3,11 +3,9 @@ import pandas as pd
 
 # Modules
 include: "rules/functions.smk"
-include: "rules/jasmine_merge.smk"
-include: "rules/longreads_filter.smk"
+include: "rules/vg_breed_pipe.smk"
 
 # Target rules - step by step
 rule all:
     input:
-        ["jasmine/panel_list.txt"]
-#        ["jasmine/panel_SV.vcf"]
+        ["vg_call/wg_{sample}_{panel_vcf}.vcf.gz.tbi"]
