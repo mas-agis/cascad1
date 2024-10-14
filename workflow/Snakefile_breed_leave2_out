@@ -5,7 +5,11 @@ import pandas as pd
 include: "rules/functions.smk"
 include: "rules/vg_breed_pipe.smk"
 
+samples = pd.read_table(config["samples1"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+PANEL_SV = ["dairy1n2"]
+
 # Target rules - step by step
 rule all:
     input:
-        ["vg_call/wg_{sample}_{panel_vcf}.vcf.gz.tbi"]
+        [expand("vg_call/wg_{sample}_{panel_vcf}.vcf.gz.tbi", sample=samples.index, panel_vcf=PANEL_SV)]

@@ -1,5 +1,4 @@
-samples1: /work/project/CASCAD/mnaji/sm_folder/workflow/panel_dairy1.tsv              #samples making SV panel
-samples2: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy1.tsv            #samples to be aligned to SV panel
+samples1: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy1.tsv            #samples to be aligned to SV panel
 
 ref:
   name: BT

@@ -15,7 +15,7 @@ conda activate templatesnake
 
 ###Dry-run to check whether pipeline is working and what jobs needed to run for completion of the pipeline
 ```
-snakemake -s Snakefile_* --configfile config_*.yaml --use-conda --profile genotoul -p -n
+snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yaml --use-conda --profile genotoul -p -n
 ```
 
 ### Running pipelines on the cluster (4 Snakefiles with corresponding config.yaml) - if run locally omit the '--profile genotoul
@@ -26,26 +26,9 @@ snakemake -s Snakefile_* --configfile config_*.yaml --use-conda --profile genoto
 ```
 nohup snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
-##2.Snakefile_truvari
+##3.Snakefile_truvari
 ```
 nohup snakemake -s Snakefile_truvari --configfile config_truvari.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
-```
-
-
-
-
-#### on the cluster
-##### dry-run
-```
-snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yaml --use-conda --profile genotoul -p -n
-```
-##### real-run
-```
-snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yaml --use-conda --profile genotoul --keep-going -p -c 24
-```
-##### real-run sending to background
-```
-nohup snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
 
 
