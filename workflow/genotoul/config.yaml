@@ -17,6 +17,11 @@ set-threads:
     manta_comp: 8
     paragraph_genotypeSV: 7
     graphtyper_genotype_sv: 7
+    indexing_xg_breed: 5
+    giraffe_autoindex_breed: 1
+    giraffe_mapping_breed: 32
+    giraffe_chunk_breed: 1
+    giraffe_pack_breed: 3
 set-resources:
     bwamap:
       mem: 64GB
@@ -38,3 +43,16 @@ set-resources:
       mem: 21GB
     graphtyper_genotype_sv:
       mem: 12GB
+    indexing_xg_breed:
+      mem: 100GB
+    giraffe_autoindex_breed:
+      mem: 100GB
+    giraffe_mapping_breed:
+      mem: 40GB
+    giraffe_chunk_breed:
+      mem: 30GB
+    giraffe_pack_breed:
+      mem: 15GB
+
+
+
