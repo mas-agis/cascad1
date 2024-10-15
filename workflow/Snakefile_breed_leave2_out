@@ -9,9 +9,11 @@ samples = pd.read_table(config["samples1"],
                         dtype={"sample": str}).set_index("sample", drop=False)
 PANEL_SV = ["dairy1n2"]
 
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+
 # Target rules - step by step
 rule all:
     input:
-#        [expand("vg_vg/{panel}_giraffe_wg.gfa", panel=PANEL_SV)]
-        [expand("vg_call/wg_{sample}_{panel}.vcf.gz.tbi", sample=samples.index, panel=PANEL_SV)]
-
+#        [expand("vg_breed_vg/{panel}_giraffe_wg.gfa", panel=PANEL_SV)]
+        [expand("vg_breed_call/wg_{sample}_{panel}.vcf.gz.tbi", sample=samples.index, panel=PANEL_SV)]

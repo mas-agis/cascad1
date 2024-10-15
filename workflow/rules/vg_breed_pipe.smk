@@ -8,9 +8,9 @@ rule construct_vg_breed:
         config['ref']['genome'],
         "../resources/{panel}.vcf.gz"
     params:
-        outdir = "vg_vg/"
+        outdir = "vg_breed_vg/"
     output:
-        temp("vg_vg/{panel}_pt{chr}.vg")
+        temp("vg_breed_vg/{panel}_pt{chr}.vg")
     conda:
         "../envs/vg.yml"
     log:
@@ -20,9 +20,9 @@ rule construct_vg_breed:
 
 rule sorting_DAG_breed:
     input:
-        expand("vg_vg/{{panel}}_pt{chr}.vg", chr=CHROM)
+        expand("vg_breed_vg/{{panel}}_pt{chr}.vg", chr=CHROM)
     output:
-        temp("vg_vg/{panel}_sorting_dag.txt") 
+        temp("vg_breed_vg/{panel}_sorting_dag.txt") 
     conda:
         "../envs/vg.yml"
     log:
@@ -34,10 +34,10 @@ rule sorting_DAG_breed:
 
 rule indexing_xg_breed:
     input:
-        list_vg=expand("vg_vg/{{panel}}_pt{chr}.vg", chr=CHROM),
-        test="vg_vg/{panel}_sorting_dag.txt"
+        list_vg=expand("vg_breed_vg/{{panel}}_pt{chr}.vg", chr=CHROM),
+        test="vg_breed_vg/{panel}_sorting_dag.txt"
     output:
-        "vg_vg/{panel}_wg.xg"
+        "vg_breed_vg/{panel}_wg.xg"
     conda:
         "../envs/vg.yml"
     log:
@@ -50,9 +50,9 @@ rule indexing_xg_breed:
 
 rule convert_vg_breed:
     input:
-        "vg_vg/{panel}_wg.xg"
+        "vg_breed_vg/{panel}_wg.xg"
     output:
-        temp("vg_vg/{panel}_giraffe_wg.gfa")
+        "vg_breed_vg/{panel}_giraffe_wg.gfa"
     conda:
         "../envs/vg.yml"
     log:
@@ -62,29 +62,29 @@ rule convert_vg_breed:
 
 rule giraffe_autoindex_breed:
     input:
-        "vg_vg/{panel}_giraffe_wg.gfa"
+        "vg_breed_vg/{panel}_giraffe_wg.gfa"
     output:
-        temp("vg_vg/{panel}.giraffe.gbz"),
-        temp("vg_vg/{panel}.min"),
-        temp("vg_vg/{panel}.dist")
+        "vg_breed_vg/{panel}.giraffe.gbz",
+        "vg_breed_vg/{panel}.min",
+        "vg_breed_vg/{panel}.dist"
     conda:
         "../envs/vg.yml"
     log:
         stderr="logs/vg/giraffe_autoindex_{panel}.log"
     shell:
         r"""
-        vg autoindex --workflow giraffe --gfa {input} --prefix vg_vg/{wildcards.panel} && ls -sh {output[0]} && ls -sh {output[1]} && ls -sh {output[2]} 
+        vg autoindex --workflow giraffe --gfa {input} --prefix vg_breed_vg/{wildcards.panel} && ls -sh {output[0]} && ls -sh {output[1]} && ls -sh {output[2]} 
         """
 
 rule giraffe_mapping_breed:
     input:
-        "vg_vg/{panel}.giraffe.gbz",
-        "vg_vg/{panel}.min",
-        "vg_vg/{panel}.dist",
+        "vg_breed_vg/{panel}.giraffe.gbz",
+        "vg_breed_vg/{panel}.min",
+        "vg_breed_vg/{panel}.dist",
         get_fastq1,
         get_fastq2
     output:
-        "vg_map/{sample}_{panel}.gam"
+        "vg_breed_map/{sample}_{panel}.gam"
     conda:
         "../envs/vg.yml"
     log:
@@ -96,24 +96,24 @@ rule giraffe_mapping_breed:
 
 rule giraffe_chunk_breed:
     input:
-        "vg_vg/{panel}_wg.xg",
-        "vg_map/{sample}_{panel}.gam"
+        "vg_breed_vg/{panel}_wg.xg",
+        "vg_breed_map/{sample}_{panel}.gam"
     output:
-        temp("vg_map/{sample}_{panel}_{chr}_{chr}.gam")
+        temp("vg_breed_map/{sample}_{panel}_{chr}_{chr}.gam")
     conda:
         "../envs/vg.yml"
     log:
         stderr="logs/vg/giraffe_chunk_{sample}_{panel}_{chr}.log"
     shell:
         r"""
-        vg chunk -x {input[0]} -a {input[1]} -C -p {wildcards.chr} -O pg --prefix vg_map/{wildcards.sample}_{wildcards.panel}_wildcards.chr} && ls -sh {output}
+        vg chunk -x {input[0]} -a {input[1]} -C -p {wildcards.chr} -O pg --prefix vg_breed_map/{wildcards.sample}_{wildcards.panel}_{wildcards.chr} && ls -sh {output}
         """
 
 rule giraffe_chunk_vg_breed:
     input:
-        "vg_vg/{panel}_wg.xg"
+        "vg_breed_vg/{panel}_wg.xg"
     output:
-        temp("vg_map/{sample}_{panel}_{chr}_{chr}.vg")
+        temp("vg_breed_map/{sample}_{panel}_{chr}_{chr}.vg")
     conda:
         "../envs/vg.yml"
     log:
@@ -125,9 +125,9 @@ rule giraffe_chunk_vg_breed:
 
 rule giraffe_snarls_breed:
     input:
-        "vg_map/{sample}_{panel}_{chr}_{chr}.vg"
+        "vg_breed_map/{sample}_{panel}_{chr}_{chr}.vg"
     output:
-        temp("vg_map/{sample}_{panel}_pt{chr}.snarls")
+        temp("vg_breed_map/{sample}_{panel}_pt{chr}.snarls")
     conda:
         "../envs/vg.yml"
     log:
@@ -139,10 +139,10 @@ rule giraffe_snarls_breed:
 
 rule giraffe_pack_breed:
     input:
-        "vg_map/{sample}_{panel}_{chr}_{chr}.vg",
-        "vg_map/{sample}_{panel}_{chr}_{chr}.gam"
+        "vg_breed_map/{sample}_{panel}_{chr}_{chr}.vg",
+        "vg_breed_map/{sample}_{panel}_{chr}_{chr}.gam"
     output:
-        temp("vg_map/{sample}_{panel}_{chr}.pack")
+        temp("vg_breed_map/{sample}_{panel}_{chr}.pack")
     conda:
         "../envs/vg.yml"
     log:
@@ -154,11 +154,11 @@ rule giraffe_pack_breed:
 
 rule giraffe_call_breed: 
     input:
-        "vg_map/{sample}_{panel}_{chr}_{chr}.vg",
-        "vg_map/{sample}_{panel}_{chr}.pack",
-        "vg_map/{sample}_{panel}_pt{chr}.snarls"
+        "vg_breed_map/{sample}_{panel}_{chr}_{chr}.vg",
+        "vg_breed_map/{sample}_{panel}_{chr}.pack",
+        "vg_breed_map/{sample}_{panel}_pt{chr}.snarls"
     output:
-        temp("vg_call/{sample}_{panel}_{chr}.vcf")
+        temp("vg_breed_call/{sample}_{panel}_{chr}.vcf")
     conda:
         "../envs/vg.yml"
     log:
@@ -170,9 +170,9 @@ rule giraffe_call_breed:
 
 rule giraffe_concat_breed:
     input:
-        expand("vg_call/{{sample}}_{{panel}}_{chr}.vcf", chr=CHROM)
+        expand("vg_breed_call/{{sample}}_{{panel}}_{chr}.vcf", chr=CHROM)
     output:
-        "vg_call/wg_{sample}_{panel}.vcf.gz"
+        "vg_breed_call/wg_{sample}_{panel}.vcf.gz"
     conda:
         "../envs/mapping_min.yml"
     log:
@@ -186,9 +186,9 @@ rule giraffe_concat_breed:
 
 rule giraffe_tabix_breed:
     input:
-        "vg_call/wg_{sample}_{panel}.vcf.gz"
+        "vg_breed_call/wg_{sample}_{panel}.vcf.gz"
     output:
-        "vg_call/wg_{sample}_{panel}.vcf.gz.tbi"
+        "vg_breed_call/wg_{sample}_{panel}.vcf.gz.tbi"
     log:
         stderr="logs/vg/giraffe_tabix_{sample}_{panel}.log"
     params:
