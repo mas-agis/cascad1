@@ -16,4 +16,6 @@ temp_dir: config['tmpdir']
 # Target rules - step by step
 rule all:
     input:
-        [expand("vg_breed_call/wg_{sample}_{panel}.vcf.gz.tbi", sample=samples.index, panel=PANEL_SV)]
+        [expand("vg_breed_call/wg_{sample}_{panel}.vcf.gz.tbi", sample=samples.index, panel=PANEL_SV),
+         expand("vg_breed_stats/{sample}_{panel}.stats", sample=samples.index, panel=PANEL_SV)]
+#        [expand("vg_breed_map/{sample}_{panel}.gam", sample=samples.index, panel=PANEL_SV)]

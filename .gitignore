@@ -12,3 +12,7 @@ resources/dairy1n2.vcf.gz
 resources/dairy1n2.vcf.gz.tbi 
 resources/dairy1n4.vcf.gz 
 resources/dairy1n4.vcf.gz.tbi
+resources/HOLn2.vcf.gz 
+resources/HOLn2.vcf.gz.tbi 
+resources/HOLn4.vcf.gz 
+resources/HOLn4.vcf.gz.tbi

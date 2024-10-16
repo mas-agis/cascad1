@@ -91,8 +91,22 @@ rule giraffe_mapping_breed:
         stderr="logs/vg/giraffe_mapping_{sample}_{panel}.log"
     shell:
         r"""
-        vg giraffe --gbz-name {input[0]} --minimizer-name {input[1]} --dist-name {input[2]} -f {input[3]} -f {input[4]} --progress --threads 32 --sample {wildcards.sample}_{wildcards.panel} > {output}
+        vg giraffe --gbz-name {input[0]} --minimizer-name {input[1]} --dist-name {input[2]} -f {input[3]} -f {input[4]} --threads {threads} --progress --sample {wildcards.sample}_{wildcards.panel} > {output}
         """ 
+
+rule giraffe_mapping_stats_breed:
+    input:
+        "vg_breed_map/{sample}_{panel}.gam"
+    output:
+        "vg_breed_stats/{sample}_{panel}.stats"
+    conda:
+        "../envs/vg.yml"
+    log:
+        stderr="logs/vg/giraffe_mapping_stats_{sample}_{panel}.log"
+    shell:
+        r"""
+        vg stats -a {input} --threads {threads} > {output}
+        """
 
 rule giraffe_chunk_breed:
     input:
