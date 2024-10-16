@@ -113,7 +113,7 @@ rule giraffe_chunk_vg_breed:
     input:
         "vg_breed_vg/{panel}_wg.xg"
     output:
-        temp("vg_breed_map/{panel}_{chr}_{chr}.vg")
+        "vg_breed_map/{panel}_{chr}_{chr}.vg"
     conda:
         "../envs/vg.yml"
     log:
@@ -139,7 +139,7 @@ rule giraffe_snarls_breed:
 
 rule giraffe_pack_breed:
     input:
-        "vg_breed_map/{sample}_{panel}_{chr}_{chr}.vg",
+        "vg_breed_map/{panel}_{chr}_{chr}.vg",
         "vg_breed_map/{sample}_{panel}_{chr}_{chr}.gam"
     output:
         temp("vg_breed_map/{sample}_{panel}_{chr}.pack")
@@ -154,7 +154,7 @@ rule giraffe_pack_breed:
 
 rule giraffe_call_breed: 
     input:
-        "vg_breed_map/{sample}_{panel}_{chr}_{chr}.vg",
+        "vg_breed_map/{panel}_{chr}_{chr}.vg",
         "vg_breed_map/{sample}_{panel}_{chr}.pack",
         "vg_breed_map/{panel}_pt{chr}.snarls"
     output:
