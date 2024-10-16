@@ -4,7 +4,6 @@ import re
 samples = pd.read_table(config["samples1"],
                         dtype={"sample": str}).set_index("sample", drop=False)
 
-
 rule breed_split_truth_set:
     input:
         get_panel1
@@ -29,36 +28,36 @@ rule breed_split_truth_set:
 
 rule breed_split_vg_comp:
     input: 
-        "vg_call/wg_{sample}.vcf.gz" 
+        "vg_breed_call/wg_{sample}_{panel}.vcf.gz.tbi" 
     output:
-        temp("truvari/DEL_vg_{sample}.vcf.gz"),
-        temp("truvari/INS_vg_{sample}.vcf.gz")
+        temp("truvari_breed/DEL_vg_{sample}_{panel}.vcf.gz"),
+        temp("truvari_breed/INS_vg_{sample}_{panel}.vcf.gz")
     conda:
         "../envs/truvari.yml"
     params:
         tempdir=config['tmpdir'],
     log:
-        stderr="logs/truvari/breed_split_vg_comp/{sample}.log"
+        stderr="logs/truvari/breed_split_vg_comp/{sample}_{panel}.log"
     shell:
         r"""
         #DEL
-        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari/DEL_{wildcards.sample}.pos
-        bcftools view -R truvari/DEL_{wildcards.sample}.pos {input} -O z -o {output[0]} 
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari_breed/DEL_{wildcards.sample}_{wildcards.panel}.pos
+        bcftools view -R truvari_breed/DEL_{wildcards.sample}_{panel}.pos {input} -O z -o {output[0]} 
         tabix -p vcf {output[0]} 
-        rm truvari/DEL_{wildcards.sample}.pos
+        rm truvari_breed/DEL_{wildcards.sample}_{wildcards.panel}.pos
         #INS
-        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($4)==1){{print $1,$2}}' > truvari/INS_{wildcards.sample}.pos
-        bcftools view -R truvari/INS_{wildcards.sample}.pos {input} -O z -o {output[1]} 
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($4)==1){{print $1,$2}}' > truvari_breed/INS_{wildcards.sample}_{wildcards.panel}.pos
+        bcftools view -R truvari_breed/INS_{wildcards.sample}_{wildcards.panel}.pos {input} -O z -o {output[1]} 
         tabix -p vcf {output[1]} 
-        rm truvari/INS_{wildcards.sample}.pos
+        rm truvari_breed/INS_{wildcards.sample}_{wildcards.panel}.pos
         """
 
 rule breed_truvari_bench_DEL:
     input:
         "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
-        "truvari/DEL_{tool}_{sample}.vcf.gz"            #comp_DEL
+        "truvari_breed/DEL_vg_{sample}_{panel}.vcf.gz"            #comp_DEL
     output:
-        directory("truvari/calc_DEL_{tool}_{sample}")
+        directory("truvari_breed/calc_DEL_{sample}_{panel}")
     conda:
         "../envs/truvari.yml"
     params:
@@ -75,9 +74,9 @@ rule breed_truvari_bench_DEL:
 rule breed_truvari_bench_INS:
     input:
         "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
-        "truvari/INS_{tool}_{sample}.vcf.gz"            #comp_INS
+        "truvari_breed/INS_vg_{sample}_{panel}.vcf.gz"            #comp_INS
     output:
-        directory("truvari/calc_INS_{tool}_{sample}")
+        directory("truvari_breed/calc_INS_{sample}_{panel}")
     conda:
         "../envs/truvari.yml"
     params:
@@ -93,10 +92,10 @@ rule breed_truvari_bench_INS:
 
 rule breed_truvari_summarise:
     input:
-        expand("truvari/calc_DEL_{tool}_{sample}", sample=samples.index, tool=["vg", "graphtyper", "paragraph", "manta", "svtyper", "delly", "lumpy"]), 
-        expand("truvari/calc_INS_{tool}_{sample}",  sample=samples.index, tool=["vg", "graphtyper", "paragraph", "manta"])
+        expand("truvari_breed/calc_DEL_{sample}_{panel}"), 
+        expand("truvari_breed/calc_DEL_{sample}_{panel}")
     output:
-        "truvari/summary_SV_genotyping.txt"
+        "truvari_breed/summary_SV_genotyping.txt"
     conda:
         "../envs/truvari.yml"
     params:
@@ -109,123 +108,3 @@ rule breed_truvari_summarise:
         {params.r_script} {input}
         """  
            
-#######################################################################
-##PART of comparison between vg and paragraph SV genotype outputs
- 
-rule breed_compare_vg_para_DEL:
-    input: 
-        "truvari/calc_DEL_vg_{sample}/tp-comp.vcf.gz",
-        "truvari/calc_DEL_paragraph_{sample}/tp-comp.vcf.gz",
-        "truvari/truth_set/DEL_{sample}.vcf.gz"
-    output: 
-        directory("truvari/compare_DEL_vg_para_{sample}")
-    conda:
-        "../envs/truvari.yml"
-    params:
-        tempdir=config['tmpdir'],
-    log:
-        stderr="logs/truvari/breed_compare_vg_para/DEL_{sample}.log"
-    shell:
-        r"""
-        ##DEL
-        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
-        """
-
-rule breed_compare_vg_para_DEL_inner:
-    input:
-        "truvari/compare_DEL_vg_para_{sample}",
-        "truvari/truth_set/DEL_{sample}.vcf.gz"
-    output:
-        directory("truvari/exclusive_DEL_para_{sample}"),
-        directory("truvari/exclusive_DEL_vg_{sample}"),
-        directory("truvari/common_DEL_para_{sample}"),
-        directory("truvari/common_DEL_vg_{sample}"),
-    conda:
-        "../envs/truvari.yml"
-    params:
-        tempdir=config['tmpdir'],
-    log:
-        stderr="logs/truvari/breed_compare_vg_para_inner/DEL_{sample}.log"
-    shell:
-        r"""
-        #exlusive para
-        truvari bench -b {input[1]} -c {input[0]}/fp.vcf.gz -o {output[0]} -p 0 ;
-        #exlusive vg
-        truvari bench -b {input[1]} -c {input[0]}/fn.vcf.gz -o {output[1]} -p 0 ;
-        #common para(common SV found also in vg)
-        truvari bench -b {input[1]} -c {input[0]}/tp-comp.vcf.gz -o {output[2]} -p 0 ;
-        #common vg(common SV found also in para)
-        truvari bench -b {input[1]} -c {input[0]}/tp-base.vcf.gz -o {output[3]} -p 0 ;
-        """
-
-rule breed_compare_vg_para_INS:
-    input:
-        "truvari/calc_INS_vg_{sample}/tp-comp.vcf.gz",
-        "truvari/calc_INS_paragraph_{sample}/tp-comp.vcf.gz",
-        "truvari/truth_set/INS_{sample}.vcf.gz"
-    output:
-        directory("truvari/compare_INS_vg_para_{sample}")
-    conda:
-        "../envs/truvari.yml"
-    params:
-        tempdir=config['tmpdir'],
-    log:
-        stderr="logs/truvari/breed_compare_vg_para/INS_{sample}.log"
-    shell:
-        r"""
-        ##INS
-        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
-        """
-
-rule breed_compare_vg_para_INS_inner:
-    input:
-        "truvari/compare_INS_vg_para_{sample}",
-        "truvari/truth_set/INS_{sample}.vcf.gz"
-    output:
-        directory("truvari/exclusive_INS_para_{sample}"),
-        directory("truvari/exclusive_INS_vg_{sample}"),
-        directory("truvari/common_INS_para_{sample}"),
-        directory("truvari/common_INS_vg_{sample}"),
-    conda:
-        "../envs/truvari.yml"
-    params:
-        tempdir=config['tmpdir'],
-    log:
-        stderr="logs/truvari/breed_compare_vg_para_inner/INS_{sample}.log"
-    shell:
-        r"""
-        #exlusive para
-        truvari bench -b {input[1]} -c {input[0]}/fp.vcf.gz -o {output[0]} -p 0 ;
-        #exlusive vg
-        truvari bench -b {input[1]} -c {input[0]}/fn.vcf.gz -o {output[1]} -p 0 ;
-        #common para(common SV found also in vg)
-        truvari bench -b {input[1]} -c {input[0]}/tp-comp.vcf.gz -o {output[2]} -p 0 ;
-        #common vg(common SV found also in para)
-        truvari bench -b {input[1]} -c {input[0]}/tp-base.vcf.gz -o {output[3]} -p 0 ;
-        """
-
-
-rule breed_truvari_summarise_compare_vg_para:
-    input:
-        expand("truvari/exclusive_DEL_para_{sample}", sample=samples.index),
-        expand("truvari/exclusive_DEL_vg_{sample}", sample=samples.index),
-        expand("truvari/common_DEL_para_{sample}", sample=samples.index),
-        expand("truvari/common_DEL_vg_{sample}", sample=samples.index),
-        expand("truvari/exclusive_INS_para_{sample}", sample=samples.index),
-        expand("truvari/exclusive_INS_vg_{sample}", sample=samples.index),
-        expand("truvari/common_INS_para_{sample}", sample=samples.index),
-        expand("truvari/common_INS_vg_{sample}", sample=samples.index)
-    output:
-        "truvari/summary_compare_vg_para_SVgenotyping.txt"
-    conda:
-        "../envs/truvari.yml"
-    params:
-        tempdir=config['tmpdir'],
-        r_script="../workflow/scripts/truvari_vg_para_summarise.R"
-    log:
-        stderr="logs/truvari/breed_summarise_compare_vg_para.log"
-    shell:
-        r"""
-        {params.r_script} {input}
-        """
-
