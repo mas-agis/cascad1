@@ -7,8 +7,8 @@ include: "rules/vg_breed_pipe.smk"
 
 samples = pd.read_table(config["samples1"],
                         dtype={"sample": str}).set_index("sample", drop=False)
-#PANEL_SV = ["dairy1n2", "dairy1n4", "HOLn2", "HOLn4"]
-PANEL_SV = ["dairy1n2", "dairy1n4"]
+PANEL_SV = ["dairy1n2", "dairy1n4", "HOLn2", "HOLn4"]
+#PANEL_SV = ["dairy1n2", "dairy1n4"]
 
 workdir: config['workdir']
 temp_dir: config['tmpdir']

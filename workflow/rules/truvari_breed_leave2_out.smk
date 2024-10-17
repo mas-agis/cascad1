@@ -28,7 +28,7 @@ rule breed_split_truth_set:
 
 rule breed_split_vg_comp:
     input: 
-        "vg_breed_call/wg_{sample}_{panel}.vcf.gz.tbi" 
+        "vg_breed_call/wg_{sample}_{panel}.vcf.gz" 
     output:
         temp("truvari_breed/DEL_vg_{sample}_{panel}.vcf.gz"),
         temp("truvari_breed/INS_vg_{sample}_{panel}.vcf.gz")
@@ -42,7 +42,7 @@ rule breed_split_vg_comp:
         r"""
         #DEL
         bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari_breed/DEL_{wildcards.sample}_{wildcards.panel}.pos
-        bcftools view -R truvari_breed/DEL_{wildcards.sample}_{panel}.pos {input} -O z -o {output[0]} 
+        bcftools view -R truvari_breed/DEL_{wildcards.sample}_{wildcards.panel}.pos {input} -O z -o {output[0]} 
         tabix -p vcf {output[0]} 
         rm truvari_breed/DEL_{wildcards.sample}_{wildcards.panel}.pos
         #INS
@@ -63,7 +63,7 @@ rule breed_truvari_bench_DEL:
     params:
         tempdir=config['tmpdir'],
     log:
-        stderr="logs/truvari/breed_bench/DEL_{sample}_{tool}.log"
+        stderr="logs/truvari/breed_bench/DEL_{sample}_{panel}.log"
     shell:
         r"""
         ##DEL
@@ -82,7 +82,7 @@ rule breed_truvari_bench_INS:
     params:
         tempdir=config['tmpdir'],
     log:
-        stderr="logs/truvari/breed_bench/INS_{sample}_{tool}.log"
+        stderr="logs/truvari/breed_bench/INS_{sample}_{panel}.log"
     shell:
         r"""
         ##INS
@@ -90,21 +90,3 @@ rule breed_truvari_bench_INS:
         rm {input[1]}.tbi
         """
 
-rule breed_truvari_summarise:
-    input:
-        expand("truvari_breed/calc_DEL_{sample}_{panel}"), 
-        expand("truvari_breed/calc_DEL_{sample}_{panel}")
-    output:
-        "truvari_breed/summary_SV_genotyping.txt"
-    conda:
-        "../envs/truvari.yml"
-    params:
-        tempdir=config['tmpdir'],
-        r_script="../workflow/scripts/truvari_summarise.R"
-    log:
-        stderr="logs/truvari/breed_summarise.log"
-    shell: 
-        r"""
-        {params.r_script} {input}
-        """  
-           

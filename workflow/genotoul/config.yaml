@@ -19,7 +19,7 @@ set-threads:
     graphtyper_genotype_sv: 7
     indexing_xg_breed: 5
     giraffe_autoindex_breed: 1
-    giraffe_mapping_breed: 10
+    giraffe_mapping_breed: 3
     giraffe_mapping_stats_breed: 7
     giraffe_chunk_breed: 1
     giraffe_pack_breed: 3
