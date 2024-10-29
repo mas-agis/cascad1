@@ -23,4 +23,3 @@ rule all:
         [expand("truvari_breed/calc_DEL_{sample}_{panel}", sample=samples.index, panel=PANEL_SV),
         expand("truvari_breed/calc_INS_{sample}_{panel}", sample=samples.index, panel=PANEL_SV)]
 
-#        ["truvari/summary_compare_vg_para_SVgenotyping.txt"]

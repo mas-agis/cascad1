@@ -13,25 +13,40 @@ Once created use simply
 conda activate templatesnake
 ```
 
-###Dry-run to check whether pipeline is working and what jobs needed to run for completion of the pipeline
+### Dry-run 
+Dry-run is used to check whether pipeline is working and what jobs needed to run for completion of the pipeline.\n
+Here main input is the `Snakefile` and `config.yaml` respectively for each pipeline. \n
+The `--use-conda` is applied as we provided the `.yaml` for each rule in the pipeline. 
 ```
-snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yaml --use-conda --profile genotoul -p -n
+snakemake -s Snakefile --configfile config.yaml --use-conda -p -n
 ```
 
-### Running pipelines on the cluster (4 Snakefiles with corresponding config.yaml) - if run locally omit the '--profile genotoul
-### The main snakemake process is send to backgroud by using 'nohup <COMMAND> &'
-##1.Snakefile_longreads - Preprocessing, apply filter, and retain only DEL&INS for each individual SV vcf called from Cutesv, Pbsv, Sniffles
+### Running pipelines 
+For running in the cluster (5 Snakefiles with corresponding config.yaml) - if run locally omit the '--profile genotoul.
+The main snakemake process is sent to backgroud by using 'nohup <COMMAND> &'
 
-##2.Snakefile_SV_genotyping
+#### 1.Snakefile_longreads 
+Preprocessing, apply filter, and retain only DEL&INS for each individual SV vcf called from Cutesv, Pbsv, Sniffles
+```
+nohup snakemake -s Snakefile_longreads --configfile config_longreads.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
+```
+
+#### 2.Snakefile_SV_genotyping
 ```
 nohup snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
-##3.Snakefile_truvari
+
+#### 3.Snakefile_truvari
 ```
 nohup snakemake -s Snakefile_truvari --configfile config_truvari.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
-##4.Snakefile_breed_leave2_out
+
+#### 4.Snakefile_breed_leave2_out
+```
 nohup snakemake -s Snakefile_breed_leave2_out --configfile config_breed_leave2_out.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
-##5.Snakefile_truvari_breed
+
+#### 5.Snakefile_truvari_breed
+```
 snakemake -s Snakefile_truvari_breed --configfile config_breed_leave2_out.yaml --use-conda --keep-going -p -c 1
+```
