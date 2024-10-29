@@ -31,7 +31,7 @@ nohup snakemake -s Snakefile_SV_genotyping --configfile config_SV_genotyping.yam
 nohup snakemake -s Snakefile_truvari --configfile config_truvari.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
 ##4.Snakefile_breed_leave2_out
-nohup snakemake -s Snakefile_breed_leave2_out --configfile config_breed_leave2_out.yaml --use-conda --profile genotoul --keep-going -p -c all &
+nohup snakemake -s Snakefile_breed_leave2_out --configfile config_breed_leave2_out.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
 ##5.Snakefile_truvari_breed
 snakemake -s Snakefile_truvari_breed --configfile config_breed_leave2_out.yaml --use-conda --keep-going -p -c 1
