@@ -1,0 +1,17 @@
+samples1: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy1.tsv            #samples to be aligned to SV panel
+PANEL_SV:  ["dairy1n2", "dairy1n4", "HOLn2", "HOLn4"]
+
+ref:
+  name: BT
+  # Path to the reference genome
+  genome: "/work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa"
+  bed: "/work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed"
+  known_sites: "/work/project/CASCAD/mnaji/sm_folder/resources/ARS1.2PlusY_BQSR.vcf.gz"
+  autX: "/work/project/CASCAD/mnaji/sm_folder/resources/autX.txt"
+
+lr_dir: "/work/project/CASCAD/mnaji/sm_folder/data1"
+
+workdir: "/work/project/CASCAD/mnaji/sm_folder/results"
+
+tmpdir: "/work/project/CASCAD/mnaji/sm_folder/results/tmp"
+

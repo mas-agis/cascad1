@@ -6,10 +6,10 @@ include: "rules/functions.smk"
 include: "rules/vg_breed_pipe.smk"
 include: "rules/truvari_breed_leave2_out.smk"
 
-samples = pd.read_table(config["samples1"],
-                        dtype={"sample": str}).set_index("sample", drop=False)
+#samples = pd.read_table(config["samples1"],
+#                        dtype={"sample": str}).set_index("sample", drop=False)
 #PANEL_SV = ["dairy1n2", "dairy1n4", "HOLn2", "HOLn4"]
-PANEL_SV = ["dairy1n2", "dairy1n4"]
+#PANEL_SV = ["dairy1n2", "dairy1n4"]
 
 workdir: config['workdir']
 temp_dir: config['tmpdir']
@@ -22,4 +22,4 @@ rule all:
     input:
         [expand("truvari_breed/calc_DEL_{sample}_{panel}", sample=samples.index, panel=PANEL_SV),
         expand("truvari_breed/calc_INS_{sample}_{panel}", sample=samples.index, panel=PANEL_SV)]
-
+#        ["truvari_breed/summary_breed_truvari.txt"]
