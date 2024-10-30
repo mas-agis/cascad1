@@ -7,6 +7,7 @@ library(stringr)
 
 #get input arguments
 args = commandArgs(trailingOnly=TRUE)
+getwd()
 
 ##Truvari output section
 SAMPLE = c()
@@ -26,9 +27,9 @@ GT_concord = c()
 for (folder in args){
     file = paste0(folder, "/summary.json")
     summary = fromJSON(file, flatten=TRUE)
-    SAMPLE = c(SAMPLE, str_split_1(folder, '_')[3])
-    SVTYPE = c(SVTYPE, str_split_1(folder, '_')[2])
-    PANEL = c(PANEL, str_split_1(folder, '_')[4])
+    SAMPLE = c(SAMPLE, str_split_1(folder, '_')[4])
+    SVTYPE = c(SVTYPE, str_split_1(folder, '_')[3])
+    PANEL = c(PANEL, str_split_1(folder, '_')[5])
     BASE_count = c(BASE_count, summary$`base cnt`)
     COMP_count = c(COMP_count, summary$`comp cnt`)
     TP_comp = c(TP_comp, summary$`TP-comp`)
@@ -42,9 +43,9 @@ for (folder in args){
 
 df = data.frame(SAMPLE=SAMPLE, SVTYPE=SVTYPE, PANEL=PANEL, BASE_count=BASE_count, COMP_count=COMP_count, TP_comp=TP_comp, FP=FP, FN=FN, PRECISION=PRECISION, RECALL=RECALL, F1=F1, GT_concord=GT_concord)
 
-##Average read depth section 
+#Average read depth section 
 DEPTH = c()
-SAMPLE1 = unique(SAMPLE)
+SAMPLE1 = unique(df$SAMPLE)
 for (sample in SAMPLE1){
 	file = paste0("../workflow/report/depth/", sample, ".txt")
 	depth = fread(file, header=F) %>% unlist()
