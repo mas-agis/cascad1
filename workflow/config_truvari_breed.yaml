@@ -1,5 +1,5 @@
 samples1: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy1.tsv            #samples to be aligned to SV panel
-PANEL_SV:  ["dairy1n2", "dairy1n4", "HOLn2", "HOLn4"]
+#PANEL_SV:  ["dairy1n2", "dairy1n4", "HOLn2", "HOLn4"]
 
 ref:
   name: BT

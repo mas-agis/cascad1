@@ -9,7 +9,7 @@ samples = pd.read_table(config["samples1"],
                         dtype={"sample": str}).set_index("sample", drop=False)
 
 
-PANEL_SV = ["dairy1n2", "dairy1n4", "dairy2n2", "HOLn2", "HOLn4"]
+PANEL_SV = ["dairy1n2", "dairy1n4", "dairy2n2", "dairy2n4", "HOLn2", "HOLn4"]
 #PANEL_SV = ["dairy1n2", "dairy1n4", "HOLn2", "HOL15jasmn2"]
 ##EXPLANATION OF THE NAMING VCF-PANEL ABOVE
 #dairy1n2 & dairyn4 (vcf panel of 70 individuals of HOL,MON,NMD with respective maf 2/140 and 4/140 - merged by jasmine)

@@ -1,10 +1,10 @@
 
 import re
 
-samples = pd.read_table(config["samples1"],
-                        dtype={"sample": str}).set_index("sample", drop=False)
-
-PANEL_SV = config["PANEL_SV"]
+#samples = pd.read_table(config["samples1"],
+#                        dtype={"sample": str}).set_index("sample", drop=False)
+#
+#PANEL_SV = config["PANEL_SV"]
 
 rule breed_split_truth_set:
     input:
@@ -92,22 +92,22 @@ rule breed_truvari_bench_INS:
         rm {input[1]}.tbi
         """
 
-rule breed_truvari_summarise:
-    input:
-        expand("truvari_breed/calc_DEL_{sample}_{panel}", sample=samples, panel=PANEL_SV),
-        expand("truvari_breed/calc_INS_{sample}_{panel}", sample=samples, panel=PANEL_SV)
-    output:
-        "truvari_breed/summary_breed_truvari.txt"
-    conda:
-        "../envs/truvari.yml"
-    params:
-        tempdir=config['tmpdir'],
-        r_script="../workflow/scripts/truvari_breed_summarise.R"
-    log:
-        stderr="logs/truvari/breed_bench/truvari_summarise.log"
-    shell:
-        r"""
-        {params.r_script} {input}
-        """
-
-
+#rule breed_truvari_summarise:
+#    input:
+#        expand("truvari_breed/calc_DEL_{sample}_{panel}", sample=samples, panel=PANEL_SV),
+#        expand("truvari_breed/calc_INS_{sample}_{panel}", sample=samples, panel=PANEL_SV)
+#    output:
+#        "truvari_breed/summary_breed_truvari.txt"
+#    conda:
+#        "../envs/truvari.yml"
+#    params:
+#        tempdir=config['tmpdir'],
+#        r_script="../workflow/scripts/truvari_breed_summarise.R"
+#    log:
+#        stderr="logs/truvari/breed_bench/truvari_summarise.log"
+#    shell:
+#        r"""
+#        {params.r_script} {input}
+#        """
+#
+#
