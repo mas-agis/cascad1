@@ -8,9 +8,14 @@ include: "rules/vg_breed_pipe.smk"
 #samples
 samples = pd.read_table(config["samples1"],
                         dtype={"sample": str}).set_index("sample", drop=False)
-
+samples = pd.read_table(config["samples2"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+samples = pd.read_table(config["samples3"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
 #PANEL_SV
 PANEL_SV = ["dairy1n2", "dairy1n4", "dairy2n2", "dairy2n4", "HOLn2", "HOLn4"]
+PANEL_SV = ["HOL2n2", "HOL2n4"]
+PANEL_SV = ["HOL3n2", "HOL3n4"]
 
 workdir: config['workdir']
 temp_dir: config['tmpdir']
