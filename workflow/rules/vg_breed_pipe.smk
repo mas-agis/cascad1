@@ -179,7 +179,9 @@ rule giraffe_call_breed:
         stderr="logs/vg/giraffe_call_{sample}_{panel}_{chr}.log"
     shell:
         r"""
-        vg call {input[0]} -k {input[1]} -r {input[2]} -s {wildcards.sample}_{wildcards.panel} --threads 3 > {output} 
+        #vg call {input[0]} -k {input[1]} -r {input[2]} -s {wildcards.sample}_{wildcards.panel} --threads 3 > {output} 
+        vg call {input[0]} -a -k {input[1]} -r {input[2]} -s {wildcards.sample}_{wildcards.panel} --threads 3 > {output} #mod1 _ temporary test-calling all bubbles in the variation graph
+        #vg call {input[0]} -A -k {input[1]} -r {input[2]} -s {wildcards.sample}_{wildcards.panel} --threads 3 > {output} #mod2 _ temporary test-calling all bubbles (even nested) in the variation graph
         """
 
 rule giraffe_concat_breed:
