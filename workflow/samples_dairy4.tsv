@@ -1,4 +1,7 @@
 sample	reads	SV_panel
 HOLFRAM004460056593	/work/project/CASCAD/mnaji/fastq_sr/HOLFRAM004460056593.R1.fq.gz,/work/project/CASCAD/mnaji/fastq_sr/HOLFRAM004460056593.R2.fq.gz	/work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/HOLFRAM004460056593_pbsv.vcf.gz
 HOLFRAM008069306607	/work/project/CASCAD/mnaji/fastq_sr/HOLFRAM008069306607.R1.fq.gz,/work/project/CASCAD/mnaji/fastq_sr/HOLFRAM008069306607.R2.fq.gz	/work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/HOLFRAM008069306607_pbsv.vcf.gz
+MONFRAM002529879925	/work/project/CASCAD/mnaji/fastq_sr/MONFRAM002529879925.R1.fq.gz,/work/project/CASCAD/mnaji/fastq_sr/MONFRAM002529879925.R2.fq.gz	/work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/MONFRAM002529879925_pbsv.vcf.gz
 MONFRAM003912302640	/work/project/CASCAD/mnaji/fastq_sr/MONFRAM003912302640.R1.fq.gz,/work/project/CASCAD/mnaji/fastq_sr/MONFRAM003912302640.R2.fq.gz	/work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/MONFRAM003912302640_pbsv.vcf.gz
+NMDFRAM002234643275	/work/project/CASCAD/mnaji/fastq_sr/NMDFRAM002234643275.R1.fq.gz,/work/project/CASCAD/mnaji/fastq_sr/NMDFRAM002234643275.R2.fq.gz	/work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/NMDFRAM002234643275_pbsv.vcf.gz
+NMDFRAM002258273022	/work/project/CASCAD/mnaji/fastq_sr/NMDFRAM002258273022.R1.fq.gz,/work/project/CASCAD/mnaji/fastq_sr/NMDFRAM002258273022.R2.fq.gz	/work/project/CASCAD/mnaji/sm_folder/results/vcf_lr/NMDFRAM002258273022_pbsv.vcf.gz

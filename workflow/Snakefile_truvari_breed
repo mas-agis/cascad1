@@ -20,7 +20,7 @@ PANEL_SV = ["dairy1n2", "dairy1n4", "dairy2n2", "dairy2n4", "HOLn2", "HOLn4"]
 PANEL_SV = ["HOL2n2", "HOL2n4"]
 PANEL_SV = ["HOL3n2", "HOL3n4"]
 PANEL_SV = ["HOL3n2", "HOL3n4", "dairy3n2", "dairy3n4", "dairy4n2", "dairy4n4"]
-PANEL_SV = ["all1n2", "all1n4"]
+PANEL_SV = ["all1n2", "all1n4", "all2n2"]
 PANEL_SV = ["HOL3n2", "HOL3n4", "dairy3n2", "dairy3n4", "dairy4n2", "dairy4n4", "all1n2", "all1n4"] #only for the truvari with subsetting the truth set of individual's SV that also in panel
 PANEL_SV = ["all2n2"]
 

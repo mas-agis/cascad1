@@ -1,0 +1,91 @@
+import sys
+import pandas as pd
+
+# Modules
+include: "rules/functions.smk"
+
+CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, "X"]
+
+PANEL_SV = ["all1n2", "all1n4", "all2n2", "all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "dairy1n2", "dairy1n4", "dairy2n2", "dairy2n4", "dairy3n2", "dairy3n4", "dairy4n2", "dairy4n4", "HOL2n2", "HOL2n4", "HOL3n2", "HOL3n4", "HOLn2", "HOLn4", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2" ]
+
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+
+# Target rules - step by step
+rule all:
+    input:
+        ["vg_bubble/summary_bubble_vg.txt"]
+
+
+########################################################################
+########################################################################
+rule bubble_chunk_vg:
+    input:
+        "vg_bubble/{panel}_wg.xg"
+    output:
+        temp("vg_bubble/{panel}_{chr}_{chr}.vg")
+    conda:
+        "envs/vg.yml"
+    log:
+        stderr="logs/bubble_vg/chunk_{panel}_{chr}.log"
+    shell:
+        r"""
+        vg chunk -x {input[0]} -C -p {wildcards.chr} > {output}
+        """
+
+rule bubble_convert_vg:
+    input:
+        "vg_bubble/{panel}_{chr}_{chr}.vg"
+    output:
+        temp("vg_bubble/{panel}_{chr}_{chr}.gfa")
+    conda:
+        "envs/vg.yml"
+    log:
+        stderr="logs/bubble_vg/convert_{panel}_{chr}.log"
+    shell:
+        r"""
+        vg convert --gfa-out {input[0]} > {output}
+        """
+
+rule bubble_count_vg:
+    input:
+        "vg_bubble/{panel}_{chr}_{chr}.gfa"
+    output:
+        temp("vg_bubble/{panel}_{chr}.json")
+    conda:
+        "envs/BubbleGun.yml"
+    log:
+        stderr="logs/bubble_vg/count_{panel}_{chr}.log"
+    shell:
+        r"""
+        BubbleGun -g {input[0]} bchains --bubble_json {output} --save_memory
+        """
+
+rule bubble_count_simplify:
+    input:
+        "vg_bubble/{panel}_{chr}.json"
+    output:
+        "vg_bubble/simp_{panel}_{chr}.txt"
+    conda:
+        "envs/BubbleGun.yml"
+    log:
+        stderr="logs/bubble_vg/simplify_{panel}_{chr}.log"
+    shell:
+        r"""
+        jq length {input} | awk -v PANEL={wildcards.panel} -v CHR={wildcards.chr} '{{print $1, PANEL, CHR}}' > {output} 
+        """
+
+rule bubble_count_summarise:
+    input:
+        expand("vg_bubble/simp_{panel}_{chr}.txt", panel=PANEL_SV, chr=CHROM)
+    output:
+        "vg_bubble/summary_bubble_vg.txt"
+    conda:
+        "envs/BubbleGun.yml"
+    log:
+        stderr="logs/bubble_vg/summarise_count.log"
+    shell:
+        r"""
+        cat {input} > {output}
+        """
+

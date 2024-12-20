@@ -23,6 +23,10 @@ set-threads:
     giraffe_mapping_stats_breed: 7
     giraffe_chunk_breed: 1
     giraffe_pack_breed: 3
+    create_graph_giraffe_autoindex: 1
+    giraffe_mapping_graph: 32
+    giraffe_chunk_graph: 1
+    giraffe_pack_graph: 1
 set-resources:
     bwamap:
       mem: 64GB
@@ -55,6 +59,14 @@ set-resources:
     giraffe_chunk_breed:
       mem: 30GB
     giraffe_pack_breed:
+      mem: 15GB
+    create_graph_giraffe_autoindex:
+      mem: 100GB
+    giraffe_mapping_graph:
+      mem: 40GB
+    giraffe_chunk_graph:
+      mem: 30GB
+    giraffe_pack_graph:
       mem: 15GB
 
 

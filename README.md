@@ -50,3 +50,22 @@ nohup snakemake -s Snakefile_breed_leave2_out --configfile config_breed_leave2_o
 ```
 snakemake -s Snakefile_truvari_breed --configfile config_breed_leave2_out.yaml --use-conda --keep-going -p -c 1
 ```
+
+#### 6.Snakefile_create_graph_panel
+```
+nohup snakemake -s Snakefile_create_graph_panel --configfile config_create_graph_panel.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
+```
+
+#### 7.Snakefile_call_graph_panel
+```
+nohup snakemake -s Snakefile_call_graph_panel --configfile config_call_graph_panel.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
+```
+#### 8.Snakefile_truvari_breed
+```
+snakemake -s Snakefile_truvari_graph --configfile config_call_graph_panel.yaml --use-conda --keep-going -p -c 1
+```
+#### 9.Snakefile_count_bubbles_vg
+```
+snakemake -s Snakefile_count_bubbles_vg --configfile config_call_graph_panel.yaml --use-conda --keep-going -p -c 1
+```
+
