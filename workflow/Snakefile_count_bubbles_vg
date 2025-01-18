@@ -14,7 +14,8 @@ temp_dir: config['tmpdir']
 # Target rules - step by step
 rule all:
     input:
-        ["vg_bubble/summary_bubble_vg.txt"]
+#        ["vg_bubble/summary_bubble_vg.txt"]
+        [expand("vg_bubble/vg_deconst/{panel}_{chr}_bubble.vcf", panel=PANEL_SV, chr=CHROM)]        
 
 
 ########################################################################
@@ -51,19 +52,21 @@ rule bubble_count_vg:
     input:
         "vg_bubble/{panel}_{chr}_{chr}.gfa"
     output:
-        temp("vg_bubble/{panel}_{chr}.json")
+        "vg_bubble/{panel}_{chr}.txt",
+        temp("vg_bubble/{panel}_{chr}.err")
     conda:
         "envs/BubbleGun.yml"
     log:
         stderr="logs/bubble_vg/count_{panel}_{chr}.log"
     shell:
         r"""
-        BubbleGun -g {input[0]} bchains --bubble_json {output} --save_memory
+        BubbleGun -g {input[0]} bchains --save_memory > {output[0]} 2>{output[1]}
         """
 
 rule bubble_count_simplify:
     input:
-        "vg_bubble/{panel}_{chr}.json"
+        "vg_bubble/{panel}_{chr}.txt",
+        "vg_bubble/{panel}_{chr}.err"
     output:
         "vg_bubble/simp_{panel}_{chr}.txt"
     conda:
@@ -72,7 +75,7 @@ rule bubble_count_simplify:
         stderr="logs/bubble_vg/simplify_{panel}_{chr}.log"
     shell:
         r"""
-        jq length {input} | awk -v PANEL={wildcards.panel} -v CHR={wildcards.chr} '{{print $1, PANEL, CHR}}' > {output} 
+        grep -i superbubbles {input[0]} | awk -v PANEL={wildcards.panel} -v CHR={wildcards.chr} '{{print $4, $6, PANEL, CHR}}' > {output}
         """
 
 rule bubble_count_summarise:
@@ -88,4 +91,38 @@ rule bubble_count_summarise:
         r"""
         cat {input} > {output}
         """
+
+rule bubble_autoindex:
+    input:
+        "vg_bubble/{panel}_{chr}_{chr}.gfa"
+    output:
+        temp("vg_bubble/{panel}_{chr}.giraffe.gbz"),
+        temp("vg_bubble/{panel}_{chr}.min"),
+        temp("vg_bubble/{panel}_{chr}.dist")
+    conda:
+        "envs/vg.yml"
+    log:
+        stderr="logs/vg_bubble/autoindex_{panel}_{chr}.log"
+    shell:
+        r"""
+        vg autoindex --workflow giraffe --gfa {input} --prefix vg_bubble/{wildcards.panel}_{wildcards.chr}
+        """
+ 
+
+rule bubble_deconstruct:
+    input:
+        vg_gbz="vg_bubble/{panel}_{chr}.giraffe.gbz",
+        vg_min="vg_bubble/{panel}_{chr}.min",
+        vg_dist="vg_bubble/{panel}_{chr}.dist"
+    output:
+        "vg_bubble/vg_deconst/{panel}_{chr}_bubble.vcf"
+    conda:
+        "envs/vg.yml"
+    log:
+        stderr="logs/vg_bubble/autoindex_{panel}_{chr}.log"
+    shell:
+        r"""
+        vg deconstruct -a {input.vg_gbz} > {output} 
+        """
+
 

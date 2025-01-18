@@ -68,4 +68,5 @@ resources/all7BPn2.vcf.gz
 resources/all7BPn2.vcf.gz.tbi
 resources/all8BPn2.vcf.gz
 resources/all8BPn2.vcf.gz.tbi
-
+resources/panel_final.vcf.gz
+resources/panel_final.vcf.gz.tbi

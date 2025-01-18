@@ -27,6 +27,9 @@ set-threads:
     giraffe_mapping_graph: 32
     giraffe_chunk_graph: 1
     giraffe_pack_graph: 1
+    giraffe_all_mapping: 32
+    giraffe_all_chunk: 1
+    giraffe_all_pack: 1
 set-resources:
     bwamap:
       mem: 64GB
@@ -68,6 +71,13 @@ set-resources:
       mem: 30GB
     giraffe_pack_graph:
       mem: 15GB
+    giraffe_all_mapping:
+      mem: 40GB
+    giraffe_all_chunk:
+      mem: 30GB
+    giraffe_all_pack:
+      mem: 15GB
+
 
 
 

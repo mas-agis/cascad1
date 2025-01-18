@@ -1,0 +1,21 @@
+import sys
+import pandas as pd
+
+# Modules
+include: "rules/functions.smk"
+include: "rules/vg_pipe_call_all_SR.smk"
+
+samples = pd.read_table(config["samples3"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+
+#samples = pd.read_table(config["samples_allSR"],
+#                        dtype={"sample": str}).set_index("sample", drop=False)
+
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+
+# Target rules - step by step
+rule all:
+    input:
+#        [expand("vg_all_map/{sample}.gam", sample=samples.index)] #check multi-threading on the same vg ref
+        [expand("vg_all_call/wg_{sample}.vcf.gz.tbi", sample=samples.index)]

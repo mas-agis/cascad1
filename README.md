@@ -60,12 +60,14 @@ nohup snakemake -s Snakefile_create_graph_panel --configfile config_create_graph
 ```
 nohup snakemake -s Snakefile_call_graph_panel --configfile config_call_graph_panel.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
-#### 8.Snakefile_truvari_breed
+#### 8.Snakefile_truvari_graph
 ```
 snakemake -s Snakefile_truvari_graph --configfile config_call_graph_panel.yaml --use-conda --keep-going -p -c 1
 ```
 #### 9.Snakefile_count_bubbles_vg
 ```
-snakemake -s Snakefile_count_bubbles_vg --configfile config_call_graph_panel.yaml --use-conda --keep-going -p -c 1
+snakemake -s Snakefile_count_bubbles_vg --configfile config_call_graph_panel.yaml --use-conda --profile genotoul --keep-going -p -c 1
 ```
-
+#### 10.Snakefile_call_all_SR_indiv
+```
+nohup snakemake -s Snakefile_call_all_SR_indiv --configfile config_call_all_SR_indiv.yaml --use-conda --profile genotoul --keep-going -p -c 32 &
