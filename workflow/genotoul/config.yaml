@@ -1,11 +1,11 @@
 executor: slurm
-jobs: 100
+jobs: 300
 
 default-resources:
   slurm_partition: "workq"
   slurm_account: "mnaji"
   mem: 12GB
-  time: 8:00:00
+  time: 3:00:00
 set-threads:
     bwamap: 24
     remove_dup: 24
@@ -73,11 +73,11 @@ set-resources:
       mem: 15GB
     giraffe_all_mapping:
       mem: 40GB
+      cpus_per_task: 32
     giraffe_all_chunk:
-      mem: 30GB
+      mem: 15GB
     giraffe_all_pack:
       mem: 15GB
-
 
 
 

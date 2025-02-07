@@ -5,11 +5,8 @@ import pandas as pd
 include: "rules/functions.smk"
 include: "rules/vg_pipe_call_all_SR.smk"
 
-samples = pd.read_table(config["samples3"],
+samples = pd.read_table(config["samples_allSR"],
                         dtype={"sample": str}).set_index("sample", drop=False)
-
-#samples = pd.read_table(config["samples_allSR"],
-#                        dtype={"sample": str}).set_index("sample", drop=False)
 
 workdir: config['workdir']
 temp_dir: config['tmpdir']

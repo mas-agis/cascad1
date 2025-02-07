@@ -3,24 +3,6 @@ import re
 
 CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, "X"]
 
-#rule fastq_all_extract:
-#    input:
-#        fq1=get_multi_fastq1,
-#        fq2=get_multi_fastq2
-#    output:
-#        fq1="vg_all_fq/{sample}.R1.fq.gz",
-#        fq2="vg_all_fq/{sample}.R2.fq.gz"
-#    conda:
-#        "../envs/bedtools.yml"
-#    log:
-#        stderr="logs/vg_all/fastq_all_extract_{sample}.log"
-#    shell:
-#        r"""
-#        #concatenate the fastq files
-#        cat {input.fq1} > {output.fq1}
-#        cat {input.fq2} > {output.fq2}
-#        """
-
 rule giraffe_all_mapping:
     input:
         vg_gbz=config['ref']['vg_gbz'], 
@@ -29,7 +11,7 @@ rule giraffe_all_mapping:
         fq1=get_fastq1, 
         fq2=get_fastq2
     output:
-        "vg_all_map/{sample}.gam"
+        temp("vg_all_map/{sample}.gam")
     conda:
         "../envs/vg.yml"
     log:
