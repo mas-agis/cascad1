@@ -12,7 +12,7 @@ conda info --envs
 conda activate templatesnake
 
 #execute snakefile
-snakemake -s Snakefile_call_all_SR_indiv --configfile config_call_all_SR_indiv.yaml --use-conda --profile genotoul --keep-going -p -c 32
+nohup snakemake -s Snakefile_call_all_SR_indiv --configfile config_call_all_SR_indiv.yaml --use-conda --profile genotoul --keep-going -p -c 32 &
 
 #deactivate conda
 conda deactivate

@@ -65,7 +65,7 @@ nohup snakemake -s Snakefile_truvari_breed --configfile config_breed_leave2_out.
 ```
 
 #### 6.Snakefile_create_graph_panel
-
+Here is the pipeline to prepare the indexing files for alignment of short reads against created variation graph. Here, all panels are created from 14 breeds with different adjustment of jasmine merging parameters and VARCALLS threshold. Panel names with corresponding parameters is explained in `Snakefile_create_graph_panel` and representing prefix for the reference panel in format of `*.vcf.gz` as provided in the `resources/` folder.  
 ```
 nohup snakemake -s Snakefile_create_graph_panel --configfile config_create_graph_panel.yaml --use-conda --profile genotoul --keep-going -p -c 24 &
 ```
