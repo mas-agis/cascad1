@@ -1,7 +1,4 @@
-samples1: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy1.tsv            #samples to be aligned to SV panel
-samples2: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy2.tsv            #replace HOLFRAM007241082273 by HOLFRAM008550173894 for validation individual
 samples3: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy3.tsv            # replace validation individual to HOLFRAM004460056593 & HOLFRAM008069306607 (French parents)
-samples4: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy4.tsv            # replace validation individual to HOLFRAM004460056593 & HOLFRAM008069306607 (French parents) - for panel using all 14 breeds
 
 ref:
   name: BT

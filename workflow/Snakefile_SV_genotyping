@@ -21,31 +21,17 @@ temp_dir: config['tmpdir']
 
 CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, "X"]
 
-# Target rules - concise
-
-
-# Target rules - step by step
+# Target rules 
 rule all:
     input:
-#       [expand("bam_files/recal_{sample}.bam", sample=samples.index),        #mapping the short-reads - mapping.smk
-        [expand("../workflow/report/bam_stats/{sample}.txt", sample=samples.index), #bamstats for each sample
-        expand("../workflow/report/depth/{sample}.txt", sample=samples.index),
-#       expand("vg_vg/{sample}_pt{chr}.vg", sample=samples.index, chr=CHROM), #creating vg for each chr of each individual - vg_DEL.smk
-#       expand("vg_vg/{sample}_sorting_dag.txt", sample=samples.index),       #connect the vg for all chr of each individual - vg_DEL.smk
-       expand("vg_vg/{sample}_wg.xg", sample=samples.index),                 #indexing the whole genome vg - vg_DEL.smk
-#       expand("vg_vg/{sample}_giraffe_wg.gfa", sample=samples.index),  	     #convert vg to gfa - vg_DEL.smk
-#       expand("vg_vg/{sample}_giraffe_autoindex.txt", sample=samples.index), #giraffe autoindex - vg_DEL.smk
-#       expand("vg_map/{sample}.gam", sample=samples.index),                  #giraffe mapping - vg_DEL.smk
-#       expand("vg_vg/{sample}_pt{chr}.snarls", sample=samples.index, chr=CHROM), #snarls vg - vg_DEL.smk
-#        expand("vg_map/{sample}_{chr}.pack", sample=samples.index, chr=CHROM),    #pack vg including chunk before - vg_DEL.smk -not run 
-#        expand("vg_call/{sample}_{chr}.vcf", sample=samples.index, chr=CHROM),     #call vcf per chr - vg_DEL.smk - not run
-        expand("vg_call/wg_{sample}.vcf.gz.tbi", sample=samples.index),            #call vcf of SV genotypung on entire genome - vg_DEL.smk 
-#        expand("svtyper/{sample}_svtper.vcf.gz.tbi", sample=samples.index),         #call vcf of SV genotypung - svTyper
-        expand("svtyper/noMis_{sample}_svtper.vcf.gz",  sample=samples.index),       #call svtyper - remove missing genotype
-        expand("graphtyper/graphtyper_{sample}.vcf.gz", sample=samples.index),       #call graphtyper - not consistent result with previously on Trio2_offspring10x
-        expand("paragraph/para_{sample}.vcf.gz", sample=samples.index),              #call paragraph - re-run again
-        expand("delly/pass_{sample}.vcf.gz", sample=samples.index),                  #call delly
-        expand("manta/{sample}.vcf.gz", sample=samples.index),                       #call manta
-        expand("lumpy/lumpy_{sample}.vcf.gz", sample=samples.index),                 #call lumpy
-        "truvari/summary_SV_genotyping.txt"]
+       [expand("../workflow/report/bam_stats/{sample}.txt", sample=samples.index), #bamstats for each sample
+        expand("../workflow/report/depth/{sample}.txt", sample=samples.index),     #report depth after short read alignments
+        expand("vg_call/wg_{sample}.vcf.gz.tbi", sample=samples.index),            #SV genotyping by vg toolkit
+        expand("svtyper/noMis_{sample}_svtper.vcf.gz",  sample=samples.index),     #SV genotyping by svtyper 
+        expand("graphtyper/graphtyper_{sample}.vcf.gz", sample=samples.index),     #SV genotyping by graphtyper 
+        expand("paragraph/para_{sample}.vcf.gz", sample=samples.index),            #SV genotyping by paragraph 
+        expand("delly/pass_{sample}.vcf.gz", sample=samples.index),                #SV call from bam by delly
+        expand("manta/{sample}.vcf.gz", sample=samples.index),                     #SV call from bam by manta
+        expand("lumpy/lumpy_{sample}.vcf.gz", sample=samples.index),               #SV call from bam by lumpy
+        "truvari/summary_SV_genotyping.txt"]					   #Run truvari benchmark and summarize the outputs		
 

@@ -8,6 +8,7 @@ workflow/nohup_Snakefile_longreads.out
 workflow/nohup_SV_genotyping.out
 workflow/report/
 workflow/processed_fastq2reads.txt
+workflow/archive/
 resources/dairy1n2.vcf.gz 
 resources/dairy1n2.vcf.gz.tbi 
 resources/dairy1n4.vcf.gz 
