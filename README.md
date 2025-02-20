@@ -1,6 +1,6 @@
 # Comprehensive Analysis of Structural Variants in Cattle Dataset (CASCAD)
 
-This repository contains the commands and scripts to generate main dataset for *Comprehensive detection of structural variations in large dataset of long and short reads of 14 French cattle breeds, 2025, in press *. They are primarily in snakemake process listed with specified bio-conda environments for each rule execution. Of note, there are also several R scripts attached to summarise the output of analysis for producing the figures and tables. The analysis and corresponding inputs/outputs requirements are explained following the snakemake scripts.
+This repository contains the commands and scripts to generate main dataset for *Comprehensive detection of structural variations in large dataset of long and short reads of 14 French cattle breeds, 2025, in press *. They are primarily in snakemake process,listed with specified bio-conda environments for each rule execution. Of note, there are also several R scripts attached to summarise the output of analysis for producing the figures and tables. The analysis, corresponding inputs/outputs, and other requirements are explained following the snakemake scripts.
  
 
 ### Create a conda env
