@@ -53,6 +53,7 @@ resources/all7n2.vcf.gz
 resources/all7n2.vcf.gz.tbi
 resources/all8n2.vcf.gz
 resources/all8n2.vcf.gz.tbi
+resources/all1n4.vcf.gz
 resources/all1BPn2.vcf.gz
 resources/all1BPn2.vcf.gz.tbi
 resources/all2BPn2.vcf.gz
@@ -73,3 +74,4 @@ resources/panel_final.vcf.gz
 resources/panel_final.vcf.gz.tbi
 workflow1/
 results1/
+
