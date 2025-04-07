@@ -4,23 +4,248 @@ import pandas as pd
 # Modules
 include: "rules/functions.smk"
 include: "rules/vg_breed_pipe.smk"
-include: "rules/truvari_breed_leave2_out.smk"
 
+#samples
 samples = pd.read_table(config["samples1"],
                         dtype={"sample": str}).set_index("sample", drop=False)
-#PANEL_SV = ["dairy1n2", "dairy1n4", "HOLn2", "HOLn4"]
-PANEL_SV = ["dairy1n2", "dairy1n4"]
+samples = pd.read_table(config["samples2"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+samples = pd.read_table(config["samples3"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+samples = pd.read_table(config["samples4"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+
+#PANEL_SV
+PANEL_SV = ["dairy1n2", "dairy1n4", "dairy2n2", "dairy2n4", "HOLn2", "HOLn4"]
+PANEL_SV = ["HOL2n2", "HOL2n4"]
+PANEL_SV = ["HOL3n2", "HOL3n4"]
+PANEL_SV = ["HOL3n2", "HOL3n4", "dairy3n2", "dairy3n4", "dairy4n2", "dairy4n4"]
+PANEL_SV = ["all1n2", "all1n4", "all2n2"]
+PANEL_SV = ["HOL3n2", "HOL3n4", "dairy3n2", "dairy3n4", "dairy4n2", "dairy4n4", "all1n2", "all1n4"] #only for the truvari with subsetting the truth set of individual's SV that also in panel
+PANEL_SV = ["all2n2"]
 
 workdir: config['workdir']
 temp_dir: config['tmpdir']
-CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, "X"]
 
 # Target rules - concise
- 
-# Target rules - step by step
 rule all:
     input:
-        [expand("truvari_breed/calc_DEL_{sample}_{panel}", sample=samples.index, panel=PANEL_SV),
-        expand("truvari_breed/calc_INS_{sample}_{panel}", sample=samples.index, panel=PANEL_SV)]
+        ["truvari_breed/summary_breed_truvari.txt",                  #Truvari summarise with truth set of full SV of each validation individual
+        "truvari_breed/summary_breed_truvari_subset.txt"]            #Truvari summarise with subset of truth SV of each validation individual that overlapped with SV in the panel
 
-#        ["truvari/summary_compare_vg_para_SVgenotyping.txt"]
+#########################################################################################################################
+######################################################################################################################### 
+rule breed_split_truth_set:
+    input:
+        get_panel1
+    output:
+        "truvari/truth_set/DEL_{sample}.vcf.gz",
+        "truvari/truth_set/INS_{sample}.vcf.gz"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_split_truth_set/{sample}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools filter -i 'SVTYPE="DEL"' -O z -o {output[0]} {input}
+        tabix -p vcf {output[0]}
+        #INS
+        bcftools filter -i 'SVTYPE="INS"' -O z -o {output[1]} {input}
+        tabix -p vcf {output[1]}
+        """
+
+rule breed_split_vg_comp:
+    input:
+        "vg_breed_call/wg_{sample}_{panel}.vcf.gz"
+    output:
+        temp("truvari_breed/DEL_vg_{sample}_{panel}.vcf.gz"),
+        temp("truvari_breed/INS_vg_{sample}_{panel}.vcf.gz")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_split_vg_comp/{sample}_{panel}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari_breed/DEL_{wildcards.sample}_{wildcards.panel}.pos
+        bcftools view -R truvari_breed/DEL_{wildcards.sample}_{wildcards.panel}.pos {input} -O z -o {output[0]}
+        tabix -p vcf {output[0]}
+        rm truvari_breed/DEL_{wildcards.sample}_{wildcards.panel}.pos
+        #INS
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($4)==1){{print $1,$2}}' > truvari_breed/INS_{wildcards.sample}_{wildcards.panel}.pos
+        bcftools view -R truvari_breed/INS_{wildcards.sample}_{wildcards.panel}.pos {input} -O z -o {output[1]}
+        tabix -p vcf {output[1]}
+        rm truvari_breed/INS_{wildcards.sample}_{wildcards.panel}.pos
+        """
+
+rule breed_truvari_bench_DEL:
+    input:
+        "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
+        "truvari_breed/DEL_vg_{sample}_{panel}.vcf.gz"            #comp_DEL
+    output:
+        directory("truvari_breed/calc_DEL_{sample}_{panel}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_bench/DEL_{sample}_{panel}.log"
+    shell:
+        r"""
+        ##DEL
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule breed_truvari_bench_INS:
+    input:
+        "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
+        "truvari_breed/INS_vg_{sample}_{panel}.vcf.gz"            #comp_INS
+    output:
+        directory("truvari_breed/calc_INS_{sample}_{panel}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_bench/INS_{sample}_{panel}.log"
+    shell:
+        r"""
+        ##INS
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule breed_truvari_summarise:
+    input:
+        expand("truvari_breed/calc_DEL_{sample}_{panel}", sample=samples.index, panel=PANEL_SV),
+        expand("truvari_breed/calc_INS_{sample}_{panel}", sample=samples.index, panel=PANEL_SV)
+    output:
+        "truvari_breed/summary_breed_truvari.txt"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+        r_script="../workflow/scripts/truvari_breed_summarise.R"
+    log:
+        stderr="logs/truvari/breed_bench/truvari_summarise.log"
+    shell:
+        r"""
+        {params.r_script} {input}
+        """
+
+rule breed_split_GraphPanel:
+    input:
+        "../resources/{panel}.vcf.gz"
+    output:
+        "truvari_breed/panel_set/DEL_{panel}.vcf.gz",
+        "truvari_breed/panel_set/INS_{panel}.vcf.gz"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_split_GraphPanel/{panel}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools filter -i 'SVTYPE="DEL"' -O z -o {output[0]} {input}
+        tabix -p vcf {output[0]}
+        #INS
+        bcftools filter -i 'SVTYPE="INS"' -O z -o {output[1]} {input}
+        tabix -p vcf {output[1]}
+        """  
+
+rule breed_truvari_truth_panel_DEL:
+    input:
+        "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSetAll_DEL
+        "truvari_breed/panel_set/DEL_{panel}.vcf.gz"    #splitted_panel comp
+    output:
+        directory("truvari_breed/truth_subset/DEL_{sample}_{panel}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/truvari_truth_panel/DEL_{sample}_{panel}.log"
+    shell:
+        r"""
+        ##DEL
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule breed_truvari_bench_subset_DEL:
+    input:
+        "truvari_breed/truth_subset/DEL_{sample}_{panel}",
+        "truvari_breed/DEL_vg_{sample}_{panel}.vcf.gz"
+    output:
+        directory("truvari_breed/calc_subset_DEL_{sample}_{panel}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_bench_subset/DEL_{sample}_{panel}.log"
+    shell:
+        r"""
+        ##DEL
+        truvari bench -b {input[0]}/tp-base.vcf.gz -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule breed_truvari_truth_panel_INS:
+    input:
+        "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSetAll_INS
+        "truvari_breed/panel_set/INS_{panel}.vcf.gz"    #splitted_panel comp
+    output:
+        directory("truvari_breed/truth_subset/INS_{sample}_{panel}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/truvari_truth_panel/INS_{sample}_{panel}.log"
+    shell:
+        r"""
+        ##INS
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule breed_truvari_bench_subset_INS:
+    input:
+        "truvari_breed/truth_subset/INS_{sample}_{panel}",
+        "truvari_breed/INS_vg_{sample}_{panel}.vcf.gz"
+    output:
+        directory("truvari_breed/calc_subset_INS_{sample}_{panel}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_bench_subset/INS_{sample}_{panel}.log"
+    shell:
+        r"""
+        ##INS
+        truvari bench -b {input[0]}/tp-base.vcf.gz -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule breed_truvari_summarise_subset:
+    input:
+        expand("truvari_breed/calc_subset_DEL_{sample}_{panel}", sample=samples.index, panel=PANEL_SV),
+        expand("truvari_breed/calc_subset_INS_{sample}_{panel}", sample=samples.index, panel=PANEL_SV)
+    output:
+        "truvari_breed/summary_breed_truvari_subset.txt"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+        r_script="../workflow/scripts/truvari_breed_summarise_subset.R"
+    log:
+        stderr="logs/truvari/breed_bench/truvari_summarise_subset.log"
+    shell:
+        r"""
+        {params.r_script} {input}
+        """
+  

@@ -18,4 +18,14 @@ def get_panel_breed(wildcards):
     """Get panel (PBSV) of given reference-sample - for breed_partial"""
     vcf = samples.loc[wildcards.sample, "SV_panel"]
     return vcf
-    
+def get_multi_fastq1(wildcards):
+    """Get source of multi-files of splitted fq1"""
+    source_SR = samples.loc[wildcards.sample, "multi_fq1"]
+    source_SR = source_SR.replace(',', ' ')
+    return source_SR
+def get_multi_fastq2(wildcards):
+    """Get source of multi-files of splitted fq2"""
+    source_SR = samples.loc[wildcards.sample, "multi_fq2"]
+    source_SR = source_SR.replace(',', ' ')
+    return source_SR
+

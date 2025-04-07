@@ -1,0 +1,122 @@
+import sys
+import pandas as pd
+
+# Modules
+include: "rules/functions.smk"
+
+#samples
+samples = pd.read_table(config["samples"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+#specify workdir
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+
+# Target rules - concise
+rule all:
+    input:
+        ["truvari_all/summary_all_truvari.txt"] #Truvari summarise with truth set of full SV of each validation individual
+
+#########################################################################################################################
+######################################################################################################################### 
+rule all_split_truth_set:
+    input:
+        get_panel1
+    output:
+        truth_DEL="truvari_all/truth_set/DEL_{sample}.vcf.gz",
+        truth_INS="truvari_all/truth_set/INS_{sample}.vcf.gz"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/all_split_truth_set/{sample}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools filter -i 'SVTYPE="DEL"' -O z -o {output.truth_DEL} {input}
+        tabix -p vcf {output.truth_DEL}
+        #INS
+        bcftools filter -i 'SVTYPE="INS"' -O z -o {output.truth_INS} {input}
+        tabix -p vcf {output.truth_INS}
+        """
+
+rule all_split_vg_comp:
+    input:
+        config['biallelic_SV_genotyped']
+    output:
+        comp_DEL="truvari_all/DEL_vg_biallelic_sv.vcf.gz",
+        comp_INS="truvari_all/INS_vg_biallelic_sv.vcf.gz"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/all_split_vg_comp/biallelic_sv_genotyped.log"
+    shell:
+        r"""
+        #DEL
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari_all/DEL_biallelic.pos
+        bcftools view -R truvari_all/DEL_biallelic.pos {input} -O z -o {output.comp_DEL}
+        tabix -p vcf {output.comp_DEL}
+        rm truvari_all/DEL_biallelic.pos
+        #INS
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($4)==1){{print $1,$2}}' > truvari_all/INS_biallelic.pos
+        bcftools view -R truvari_all/INS_biallelic.pos {input} -O z -o {output.comp_INS}
+        tabix -p vcf {output.comp_INS}
+        rm truvari_all/INS_biallelic.pos
+        """
+
+rule all_truvari_bench_DEL:
+    input:
+        truth_DEL="truvari_all/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
+        comp_DEL="truvari_all/DEL_vg_biallelic_sv.vcf.gz"            #comp_DEL
+    output:
+        directory("truvari_all/calc_DEL_{sample}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/all_bench/DEL_{sample}.log"
+    shell:
+        r"""
+        ##DEL
+        truvari bench -b {input.truth_DEL} -c {input.comp_DEL} -o {output} -p 0 --cSample {wildcards.sample} ;
+        """
+
+rule all_truvari_bench_INS:
+    input:
+        truth_INS="truvari_all/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
+        comp_INS="truvari_all/INS_vg_biallelic_sv.vcf.gz"      #comp_INS
+    output:
+        directory("truvari_all/calc_INS_{sample}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/all_bench/INS_{sample}.log"
+    shell:
+        r"""
+        ##INS
+        truvari bench -b {input.truth_INS} -c {input.comp_INS} -o {output} -p 0 --cSample {wildcards.sample} ;
+        """
+
+rule all_truvari_summarise:
+    input:
+        expand("truvari_all/calc_DEL_{sample}", sample=samples.index),
+        expand("truvari_all/calc_INS_{sample}", sample=samples.index)
+    output:
+        "truvari_all/summary_all_truvari.txt"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+        r_script="../workflow/scripts/truvari_all_summarise.R"
+    log:
+        stderr="logs/truvari/all_bench/truvari_summarise.log"
+    shell:
+        r"""
+        {params.r_script} {input}
+        """
+

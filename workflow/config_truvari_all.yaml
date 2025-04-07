@@ -1,0 +1,19 @@
+samples: /work/project/CASCAD/mnaji/sm_folder/workflow/samples.tsv              #samples that have both logn reads and short reads available
+
+#specify the vcf of SV genotyped on final reference panel for 571 samples SV all (biallelic)
+biallelic_SV_genotyped: /work/project/CASCAD/mnaji/sm_folder/results/all_sv_genotype/rehead_mask_all_biallelic_wg.vcf.gz 
+
+ref:
+  name: BT
+  # Path to the reference genome
+  genome: "/work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa"
+  bed: "/work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed"
+  known_sites: "/work/project/CASCAD/mnaji/sm_folder/resources/ARS1.2PlusY_BQSR.vcf.gz"
+  autX: "/work/project/CASCAD/mnaji/sm_folder/resources/autX.txt"
+
+lr_dir: "/work/project/CASCAD/mnaji/sm_folder/data1"
+
+workdir: "/work/project/CASCAD/mnaji/sm_folder/results"
+
+tmpdir: "/work/project/CASCAD/mnaji/sm_folder/results/tmp"
+

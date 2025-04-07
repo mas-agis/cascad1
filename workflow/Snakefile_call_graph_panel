@@ -1,0 +1,19 @@
+import sys
+import pandas as pd
+
+# Modules
+include: "rules/functions.smk"
+include: "rules/vg_call_graph.smk"
+
+samples = pd.read_table(config["samples3"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+
+PANEL_SV = ["all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2"]
+
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+
+# Target rules - step by step
+rule all:
+    input:
+        [expand("vg_graph_call/wg_{sample}_{panel}.vcf.gz.tbi", sample=samples.index, panel=PANEL_SV)]

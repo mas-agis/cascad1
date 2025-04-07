@@ -1,0 +1,39 @@
+import sys
+import pandas as pd
+
+# Modules
+include: "rules/functions.smk"
+include: "rules/vg_create_graph.smk"
+
+PANEL_SV = ["all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2", "panel_final"]
+##PANELS ABOVE ARE FOR 14 BREEDS PANEL WITH VARIOUS PARAMETERS AS BELOW:
+#PANEL_NAME 	Jasmine_Merging		VARCALLS
+#all1n2       	Default                -
+#all7n2       	Default                3
+#all8n2       	Default                5
+#all2n2       	Default                7
+#all3n2       	Default                13
+#all4n2       	Default                20
+#all5n2       	Default                27
+#all6n2       	Default                36
+#all1BPn2	Adjusted		-
+#all7BPn2	Adjusted		3
+#all8BPn2	Adjusted		5
+#all2BPn2	Adjusted		7
+#all3BPn2	Adjusted		13
+#all4BPn2	Adjusted		20
+#all5BPn2	Adjusted		27
+#all6BPn2	Adjusted		36
+###n2 : indicates we retain only SV with minimum alternative allele counts of 4
+##
+#panel_final indicates reference SV created from 176 samples of 14 breeds
+
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+
+# Target rules - step by step
+rule all:
+    input:
+        expand(["vg_graph_vg/{panel}.giraffe.gbz", "vg_graph_vg/{panel}.min", "vg_graph_vg/{panel}.dist"], panel=PANEL_SV)
+
+

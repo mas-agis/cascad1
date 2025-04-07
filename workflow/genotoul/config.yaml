@@ -1,11 +1,11 @@
 executor: slurm
-jobs: 100
+jobs: 300
 
 default-resources:
   slurm_partition: "workq"
   slurm_account: "mnaji"
   mem: 12GB
-  time: 8:00:00
+  time: 3:00:00
 set-threads:
     bwamap: 24
     remove_dup: 24
@@ -19,10 +19,17 @@ set-threads:
     graphtyper_genotype_sv: 7
     indexing_xg_breed: 5
     giraffe_autoindex_breed: 1
-    giraffe_mapping_breed: 3
+    giraffe_mapping_breed: 32
     giraffe_mapping_stats_breed: 7
     giraffe_chunk_breed: 1
     giraffe_pack_breed: 3
+    create_graph_giraffe_autoindex: 1
+    giraffe_mapping_graph: 32
+    giraffe_chunk_graph: 1
+    giraffe_pack_graph: 1
+    giraffe_all_mapping: 32
+    giraffe_all_chunk: 1
+    giraffe_all_pack: 1
 set-resources:
     bwamap:
       mem: 64GB
@@ -55,6 +62,21 @@ set-resources:
     giraffe_chunk_breed:
       mem: 30GB
     giraffe_pack_breed:
+      mem: 15GB
+    create_graph_giraffe_autoindex:
+      mem: 100GB
+    giraffe_mapping_graph:
+      mem: 40GB
+    giraffe_chunk_graph:
+      mem: 30GB
+    giraffe_pack_graph:
+      mem: 15GB
+    giraffe_all_mapping:
+      mem: 40GB
+      cpus_per_task: 32
+    giraffe_all_chunk:
+      mem: 15GB
+    giraffe_all_pack:
       mem: 15GB
 
 

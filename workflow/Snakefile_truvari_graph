@@ -1,0 +1,206 @@
+import sys
+import pandas as pd
+
+# Modules
+include: "rules/functions.smk"
+include: "rules/vg_call_graph.smk"
+
+#samples
+samples = pd.read_table(config["samples3"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
+
+#PANEL_SV
+PANEL_SV = ["all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2"] #for full set of truth sv
+PANEL_SV = ["all1n2", "all2n2", "all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2"] #for adjusted-set of truth sv
+
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+
+# Target rules - concise
+rule all:
+    input:
+#        ["truvari_graph/summary_graph_truvari.txt"] #Truvari summarise with truth set of full SV of each validation individual
+        ["truvari_graph/summary_graph_truvari_adjust.txt"] #Truvari summarise with adjusted set of SV of each validation individual (removed SV in the position where SV were discarded during merging SV ofr creating graph)
+
+#########################################################################################################################
+######################################################################################################################### 
+rule breed_split_truth_set:
+    input:
+        get_panel1
+    output:
+        "truvari/truth_set/DEL_{sample}.vcf.gz",
+        "truvari/truth_set/INS_{sample}.vcf.gz"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_split_truth_set/{sample}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools filter -i 'SVTYPE="DEL"' -O z -o {output[0]} {input}
+        tabix -p vcf {output[0]}
+        #INS
+        bcftools filter -i 'SVTYPE="INS"' -O z -o {output[1]} {input}
+        tabix -p vcf {output[1]}
+        """
+
+rule graph_split_vg_comp:
+    input:
+        "vg_graph_call/wg_{sample}_{panel}.vcf.gz"
+    output:
+        temp("truvari_graph/DEL_vg_{sample}_{panel}.vcf.gz"),
+        temp("truvari_graph/INS_vg_{sample}_{panel}.vcf.gz")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/graph_split_vg_comp/{sample}_{panel}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($5)==1){{print $1,$2}}' > truvari_graph/DEL_{wildcards.sample}_{wildcards.panel}.pos
+        bcftools view -R truvari_graph/DEL_{wildcards.sample}_{wildcards.panel}.pos {input} -O z -o {output[0]}
+        tabix -p vcf {output[0]}
+        rm truvari_graph/DEL_{wildcards.sample}_{wildcards.panel}.pos
+        #INS
+        bcftools view {input} | grep -v '^#' | awk 'BEGIN{{FS=OFS="\t"}}(length($4)==1){{print $1,$2}}' > truvari_graph/INS_{wildcards.sample}_{wildcards.panel}.pos
+        bcftools view -R truvari_graph/INS_{wildcards.sample}_{wildcards.panel}.pos {input} -O z -o {output[1]}
+        tabix -p vcf {output[1]}
+        rm truvari_graph/INS_{wildcards.sample}_{wildcards.panel}.pos
+        """
+
+rule graph_truvari_bench_DEL:
+    input:
+        "truvari/truth_set/DEL_{sample}.vcf.gz",  #TruthSet_DEL
+        "truvari_graph/DEL_vg_{sample}_{panel}.vcf.gz"            #comp_DEL
+    output:
+        directory("truvari_graph/calc_DEL_{sample}_{panel}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/graph_bench/DEL_{sample}_{panel}.log"
+    shell:
+        r"""
+        ##DEL
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule graph_truvari_bench_INS:
+    input:
+        "truvari/truth_set/INS_{sample}.vcf.gz",  #TruthSet_INS
+        "truvari_graph/INS_vg_{sample}_{panel}.vcf.gz"            #comp_INS
+    output:
+        directory("truvari_graph/calc_INS_{sample}_{panel}")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/graph_bench/INS_{sample}_{panel}.log"
+    shell:
+        r"""
+        ##INS
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule graph_truvari_summarise:
+    input:
+        expand("truvari_graph/calc_DEL_{sample}_{panel}", sample=samples.index, panel=PANEL_SV),
+        expand("truvari_graph/calc_INS_{sample}_{panel}", sample=samples.index, panel=PANEL_SV)
+    output:
+        "truvari_graph/summary_graph_truvari.txt"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+        r_script="../workflow/scripts/truvari_graph_summarise.R"
+    log:
+        stderr="logs/truvari/graph_bench/truvari_summarise.log"
+    shell:
+        r"""
+        {params.r_script} {input}
+        """
+
+####Additional where the based truth set is adjusted with removing SV that are also removed in the creation of the panel 
+rule breed_split_truth_set_adjust:
+    input:
+        base=get_panel1,
+        sv_removed="jasmine/sv_removed/sv_removed_{panel}.tsv.gz"
+    output:
+        base_del="truvari_graph/truth_set/DEL_{sample}_{panel}.vcf.gz",
+        base_ins="truvari_graph/truth_set/INS_{sample}_{panel}.vcf.gz"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/breed_split_truth_set/{sample}_{panel}.log"
+    shell:
+        r"""
+        #DEL
+        bcftools view -T \^{input.sv_removed} {input.base} | bcftools filter -i 'SVTYPE="DEL"' | bgzip -c > {output.base_del} 
+        tabix -p vcf {output.base_del}
+        #INS
+        bcftools view -T \^{input.sv_removed} {input.base} | bcftools filter -i 'SVTYPE="INS"' | bgzip -c > {output.base_ins} 
+        tabix -p vcf {output.base_ins}
+        """
+
+rule graph_truvari_bench_DEL_adjust:
+    input:
+        "truvari_graph/truth_set/DEL_{sample}_{panel}.vcf.gz",  #TruthSet_DEL_adjust
+        "truvari_graph/DEL_vg_{sample}_{panel}.vcf.gz"            #comp_DEL
+    output:
+        directory("truvari_graph/calc_DEL_{sample}_{panel}_adjust")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/graph_bench/DEL_{sample}_{panel}_adjust.log"
+    shell:
+        r"""
+        ##DEL
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule graph_truvari_bench_INS_adjust:
+    input:
+        "truvari_graph/truth_set/INS_{sample}_{panel}.vcf.gz",  #TruthSet_INS
+        "truvari_graph/INS_vg_{sample}_{panel}.vcf.gz"            #comp_INS
+    output:
+        directory("truvari_graph/calc_INS_{sample}_{panel}_adjust")
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+    log:
+        stderr="logs/truvari/graph_bench/INS_{sample}_{panel}_adjust.log"
+    shell:
+        r"""
+        ##INS
+        truvari bench -b {input[0]} -c {input[1]} -o {output} -p 0 ;
+        """
+
+rule graph_truvari_summarise_adjust:
+    input:
+        expand("truvari_graph/calc_DEL_{sample}_{panel}_adjust", sample=samples.index, panel=PANEL_SV),
+        expand("truvari_graph/calc_INS_{sample}_{panel}_adjust", sample=samples.index, panel=PANEL_SV)
+    output:
+        "truvari_graph/summary_graph_truvari_adjust.txt"
+    conda:
+        "envs/truvari.yml"
+    params:
+        tempdir=config['tmpdir'],
+        r_script="../workflow/scripts/truvari_graph_summarise_adjust.R"
+    log:
+        stderr="logs/truvari/graph_bench/truvari_summarise_adjust.log"
+    shell:
+        r"""
+        {params.r_script} {input}
+        """
+
