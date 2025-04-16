@@ -10,7 +10,7 @@ We used the snakemake version 8.12.0 and created the environment via commands be
 mamba create  -c conda-forge -c bioconda -n templatesnake snakemake=8.12.0
 mamba activate templatesnake
 mamba install ...
-pip install snakemake-executor-plugin-slurm
+mamba deactivate
 ```
 Once created use simply
 ```
