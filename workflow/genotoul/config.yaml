@@ -78,6 +78,8 @@ set-resources:
       mem: 15GB
     giraffe_all_pack:
       mem: 15GB
+    create_graph_indexing:
+      mem: 80GB
 
 
 

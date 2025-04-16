@@ -1,4 +1,5 @@
 samples3: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy3.tsv            # replace validation individual to HOLFRAM004460056593 & HOLFRAM008069306607 (French parents)
+samples_temp: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_temp.tsv  #HOLDEULFRAM*
 
 ref:
   name: BT

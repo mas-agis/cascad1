@@ -5,7 +5,7 @@ import pandas as pd
 include: "rules/functions.smk"
 include: "rules/vg_create_graph.smk"
 
-PANEL_SV = ["all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2", "panel_final"]
+PANEL_SV = ["all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2", "panel_final", "panel_Rawfinal", "panel_Ready3SVtypes"]
 ##PANELS ABOVE ARE FOR 14 BREEDS PANEL WITH VARIOUS PARAMETERS AS BELOW:
 #PANEL_NAME 	Jasmine_Merging		VARCALLS
 #all1n2       	Default                -
@@ -26,7 +26,9 @@ PANEL_SV = ["all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "all1BPn
 #all6BPn2	Adjusted		36
 ###n2 : indicates we retain only SV with minimum alternative allele counts of 4
 ##
-#panel_final indicates reference SV created from 176 samples of 14 breeds
+#panel_final indicates reference SV created from 176 samples of 14 breeds with VARCALLS of 7
+#panel_raw_final indicates merged SV from 176 samples without any filtration (~158K)
+#panel_Ready3SVtypes indicates merged SV (DEL and INS plus DUP, converted to INS) from 176 samples without any filtration
 
 workdir: config['workdir']
 temp_dir: config['tmpdir']

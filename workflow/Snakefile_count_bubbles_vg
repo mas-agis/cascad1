@@ -6,7 +6,7 @@ include: "rules/functions.smk"
 
 CHROM = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, "X"]
 
-PANEL_SV = ["all1n2", "all1n4", "all2n2", "all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "dairy1n2", "dairy1n4", "dairy2n2", "dairy2n4", "dairy3n2", "dairy3n4", "dairy4n2", "dairy4n4", "HOL2n2", "HOL2n4", "HOL3n2", "HOL3n4", "HOLn2", "HOLn4", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2", "panel_final" ]
+PANEL_SV = ["all1n2", "all1n4", "all2n2", "all3n2", "all4n2", "all5n2", "all6n2", "all7n2", "all8n2", "dairy1n2", "dairy1n4", "dairy2n2", "dairy2n4", "dairy3n2", "dairy3n4", "dairy4n2", "dairy4n4", "HOL2n2", "HOL2n4", "HOL3n2", "HOL3n4", "HOLn2", "HOLn4", "all1BPn2", "all2BPn2", "all3BPn2", "all4BPn2", "all5BPn2", "all6BPn2", "all7BPn2", "all8BPn2", "panel_final", "panel_Rawfinal", "panel_Ready3SVtypes"]
 
 workdir: config['workdir']
 temp_dir: config['tmpdir']

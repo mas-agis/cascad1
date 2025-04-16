@@ -1,17 +1,17 @@
 samples3: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_dairy3.tsv            # replace validation individual to HOLFRAM004460056593 & HOLFRAM008069306607 (French parents)
 samples_allSR: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_allSR.tsv
 
-ref:
-  name: BT
-  # Path to the reference genome
-  genome: "/work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa"
-  bed: "/work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed"
-  known_sites: "/work/project/CASCAD/mnaji/sm_folder/resources/ARS1.2PlusY_BQSR.vcf.gz"
-  autX: "/work/project/CASCAD/mnaji/sm_folder/resources/autX.txt"
-  vg_gbz: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_final.giraffe.gbz"
-  vg_min: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_final.min"
-  vg_dist: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_final.dist"
-  vg_xg: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_final_wg.xg"
+#ref:
+#  name: BT
+#  # Path to the reference genome
+#  genome: "/work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa"
+#  bed: "/work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed"
+#  known_sites: "/work/project/CASCAD/mnaji/sm_folder/resources/ARS1.2PlusY_BQSR.vcf.gz"
+#  autX: "/work/project/CASCAD/mnaji/sm_folder/resources/autX.txt"
+#  vg_gbz: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_final.giraffe.gbz"
+#  vg_min: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_final.min"
+#  vg_dist: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_final.dist"
+#  vg_xg: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_final_wg.xg"
 
 
 lr_dir: "/work/project/CASCAD/mnaji/sm_folder/data1"
@@ -19,4 +19,20 @@ lr_dir: "/work/project/CASCAD/mnaji/sm_folder/data1"
 workdir: "/work/project/CASCAD/mnaji/sm_folder/results"
 
 tmpdir: "/work/project/CASCAD/mnaji/sm_folder/results/tmp"
+
+#########################################################################################
+##TEMPORARY FOR CHECKING THE FINAL RAW PANEL and panel_Ready3SVtypes
+samples_temp: /work/project/CASCAD/mnaji/sm_folder/workflow/samples_temp.tsv
+
+ref:
+  name: BT
+  # Path to the reference genome
+  genome: "/work/project/G2BSeq/Sequences/RUN7/REF/ARS-UCD1.2_Btau5.0.1Y.fa"
+  bed: "/work/project/CASCAD/mnaji/sm_folder/resources/ars_pos.bed"
+  known_sites: "/work/project/CASCAD/mnaji/sm_folder/resources/ARS1.2PlusY_BQSR.vcf.gz"
+  autX: "/work/project/CASCAD/mnaji/sm_folder/resources/autX.txt"
+  vg_gbz: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_Ready3SVtypes.giraffe.gbz"
+  vg_min: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_Ready3SVtypes.min"
+  vg_dist: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_Ready3SVtypes.dist"
+  vg_xg: "/work/project/CASCAD/mnaji/sm_folder/results/vg_graph_vg/panel_Ready3SVtypes_wg.xg"
 

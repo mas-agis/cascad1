@@ -5,11 +5,15 @@ import pandas as pd
 include: "rules/functions.smk"
 include: "rules/vg_pipe_call_all_SR.smk"
 
+workdir: config['workdir']
+temp_dir: config['tmpdir']
+
 samples = pd.read_table(config["samples_allSR"],
                         dtype={"sample": str}).set_index("sample", drop=False)
 
-workdir: config['workdir']
-temp_dir: config['tmpdir']
+#temporary for the final_raw_panel and panel_ready3SVtypes
+samples = pd.read_table(config["samples_temp"],
+                        dtype={"sample": str}).set_index("sample", drop=False)
 
 # Target rules - step by step
 rule all:
